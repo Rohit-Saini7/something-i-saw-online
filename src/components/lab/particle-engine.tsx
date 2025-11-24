@@ -1,12 +1,20 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-
-const particleCount = 150;
-const connectionDistance = 100;
-const mouseRepelRadius = 50;
+import { RefObject, useEffect, useRef, useState } from 'react';
+import { MousePointer2, Magnet, Zap, SlidersHorizontal, X } from 'lucide-react';
 
 const mouse = { x: -1000, y: -1000 };
+
+type ParticlesConfig = {
+  count: number; // Number of dots
+  connectionDist: number; // Max distance to draw lines
+  mouseRepelDist: number; // Radius of mouse influence
+  speed: number; // Velocity multiplier
+  color: string; // Base color (cyan)
+  friction: number; // New config
+  mode: 'repel' | 'attract';
+  showTrails: boolean;
+};
 
 class Particle {
   x: number;
@@ -14,41 +22,50 @@ class Particle {
   vx: number;
   vy: number;
   size: number;
-  color: string;
+  configRef: RefObject<ParticlesConfig>;
   ctx: CanvasRenderingContext2D;
 
-  constructor(w: number, h: number, ctx: CanvasRenderingContext2D) {
+  constructor(
+    w: number,
+    h: number,
+    ctx: CanvasRenderingContext2D,
+    configRef: RefObject<ParticlesConfig>
+  ) {
     this.ctx = ctx;
+    this.configRef = configRef;
 
     this.x = Math.random() * w;
     this.y = Math.random() * h;
-
-    this.vx = (Math.random() - 0.5) * 1.5;
-    this.vy = (Math.random() - 0.5) * 1.5;
-
-    this.size = Math.random() * 3 + 2;
-
-    this.color = `rgba(${Math.floor(Math.random() * 100)}, ${Math.floor(
-      Math.random() * 255
-    )}, ${Math.floor(Math.random() * 255 + 100)}, ${Math.random() * 0.5 + 0.1})`;
+    this.vx = (Math.random() - 0.5) * this.configRef.current.speed;
+    this.vy = (Math.random() - 0.5) * this.configRef.current.speed;
+    this.size = Math.random() * 2 + 1;
   }
 
   update(w: number, h: number) {
-    this.x += this.vx;
-    this.y += this.vy;
+    const cfg = this.configRef.current;
+
+    this.x += this.vx * cfg.speed;
+    this.y += this.vy * cfg.speed;
 
     const dx = mouse.x - this.x;
     const dy = mouse.y - this.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    if (distance < mouseRepelRadius) {
-      const force = (mouseRepelRadius - distance) / mouseRepelRadius;
-      const fx = (dx / distance) * force * 3;
-      const fy = (dy / distance) * force * 3;
+    if (distance < cfg.mouseRepelDist) {
+      const force = (cfg.mouseRepelDist - distance) / cfg.mouseRepelDist;
+      const direction = cfg.mode === 'attract' ? -1 : 1;
+
+      const fx = (dx / distance) * force * cfg.speed * 2 * direction;
+      const fy = (dy / distance) * force * cfg.speed * 2 * direction;
 
       this.vx -= fx;
       this.vy -= fy;
     }
+
+    const frictionFactor = 1 - cfg.friction;
+
+    this.vx *= frictionFactor;
+    this.vy *= frictionFactor;
 
     if (this.x < 0 || this.x > w) this.vx *= -1;
     if (this.y < 0 || this.y > h) this.vy *= -1;
@@ -56,22 +73,56 @@ class Particle {
 
   draw() {
     const ctx = this.ctx;
-
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = this.color;
+    ctx.fillStyle = this.configRef.current.color;
     ctx.fill();
+  }
+
+  explode(originX: number, originY: number) {
+    const dx = this.x - originX;
+    const dy = this.y - originY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const blastRadius = 500;
+
+    if (dist < blastRadius) {
+      const force = (blastRadius - dist) / blastRadius;
+      this.vx += (dx / dist) * force * 50;
+      this.vy += (dy / dist) * force * 50;
+    }
   }
 }
 
-export default function ParticleEngine() {
+export default function ParticleLab() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const [isControlsOpen, setIsControlsOpen] = useState(true);
+
+  const [config, setConfig] = useState<ParticlesConfig>({
+    count: 120,
+    connectionDist: 100,
+    mouseRepelDist: 150,
+    speed: 1,
+    friction: 0.05,
+    color: '#64ffda',
+    mode: 'repel',
+    showTrails: false,
+  });
+
+  const configRef = useRef(config);
+  const particlesRef = useRef<Particle[]>([]);
+
+  useEffect(() => {
+    configRef.current = config;
+  }, [config]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    const container = containerRef.current;
+    if (!canvas || !container) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false });
     if (!ctx) return;
 
     let animationFrameId: number;
@@ -79,55 +130,70 @@ export default function ParticleEngine() {
 
     const initParticles = () => {
       particles = [];
-      const w = canvas.width;
-      const h = canvas.height;
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      const count = configRef.current.count;
 
-      for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle(w, h, ctx));
+      for (let i = 0; i < count; i++) {
+        particles.push(new Particle(w, h, ctx, configRef));
       }
-    };
-
-    const connectParticles = () => {
-      for (let a = 0; a < particles.length; a++) {
-        for (let b = a + 1; b < particles.length; b++) {
-          const dx = particles[a].x - particles[b].x;
-          const dy = particles[a].y - particles[b].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < connectionDistance) {
-            const opacity = 1 - distance / connectionDistance;
-
-            ctx.strokeStyle = `rgba(100, 255, 218, ${opacity * 0.2})`;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(particles[a].x, particles[a].y);
-            ctx.lineTo(particles[b].x, particles[b].y);
-            ctx.stroke();
-          }
-        }
-      }
-    };
-
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (const p of particles) {
-        p.update(canvas.width, canvas.height);
-        p.draw();
-      }
-
-      connectParticles();
-      animationFrameId = requestAnimationFrame(animate);
+      particlesRef.current = particles;
     };
 
     const handleResize = () => {
-      const parent = canvas.parentElement;
-      if (!parent) return;
-
-      canvas.width = parent.clientWidth;
-      canvas.height = parent.clientHeight;
-
+      const dpr = window.devicePixelRatio || 1;
+      const rect = container.getBoundingClientRect();
+      canvas.width = rect.width * dpr;
+      canvas.height = rect.height * dpr;
+      canvas.style.width = `${rect.width}px`;
+      canvas.style.height = `${rect.height}px`;
+      ctx.scale(dpr, dpr);
       initParticles();
+    };
+
+    const animate = () => {
+      const w = container.clientWidth;
+      const h = container.clientHeight;
+      const cfg = configRef.current;
+
+      if (particles.length !== cfg.count) initParticles();
+
+      if (cfg.showTrails) {
+        ctx.fillStyle = 'rgba(2, 6, 23, 0.2)';
+        ctx.fillRect(0, 0, w, h);
+      } else {
+        ctx.clearRect(0, 0, w, h);
+      }
+
+      particles.forEach((p, i) => {
+        p.update(w, h);
+        p.draw();
+
+        for (let j = i + 1; j < particles.length; j++) {
+          const p2 = particles[j];
+          const dx = p.x - p2.x;
+          const dy = p.y - p2.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < cfg.connectionDist) {
+            ctx.beginPath();
+            const strokeColor = cfg.color;
+            if (strokeColor.startsWith('#')) {
+              ctx.strokeStyle = strokeColor;
+              ctx.globalAlpha = 1 - dist / cfg.connectionDist;
+            } else {
+              ctx.strokeStyle = strokeColor;
+            }
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
+        }
+      });
+
+      animationFrameId = requestAnimationFrame(animate);
     };
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -141,9 +207,20 @@ export default function ParticleEngine() {
       mouse.y = -1000;
     };
 
+    const handleClick = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      const clickX = e.clientX - rect.left;
+      const clickY = e.clientY - rect.top;
+
+      particlesRef.current.forEach((p: Particle) => {
+        p.explode(clickX, clickY);
+      });
+    };
+
     window.addEventListener('resize', handleResize);
     canvas.addEventListener('mousemove', handleMouseMove);
     canvas.addEventListener('mouseleave', handleMouseLeave);
+    canvas.addEventListener('mousedown', handleClick);
 
     handleResize();
     animate();
@@ -152,14 +229,196 @@ export default function ParticleEngine() {
       window.removeEventListener('resize', handleResize);
       canvas.removeEventListener('mousemove', handleMouseMove);
       canvas.removeEventListener('mouseleave', handleMouseLeave);
+      canvas.removeEventListener('mousedown', handleClick);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className='bg-background h-full w-full cursor-crosshair'
-    />
+    <div
+      ref={containerRef}
+      className='bg-slate-950 relative h-screen w-screen overflow-hidden'
+    >
+      <canvas
+        ref={canvasRef}
+        className='block h-full w-full cursor-crosshair'
+      />
+
+      <button
+        onClick={() => setIsControlsOpen(!isControlsOpen)}
+        className={`fixed top-6 right-6 z-40 flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 backdrop-blur-md transition-all duration-300 hover:bg-slate-800 ${
+          isControlsOpen
+            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/50'
+            : 'bg-slate-900/50 text-slate-400'
+        }`}
+      >
+        {isControlsOpen ? (
+          <X className='h-5 w-5' />
+        ) : (
+          <SlidersHorizontal className='h-5 w-5' />
+        )}
+      </button>
+
+      <div
+        className={`fixed right-6 top-20 z-40 w-full max-w-xs transition-all duration-500 ease-out ${
+          isControlsOpen
+            ? 'translate-x-0 opacity-100'
+            : 'translate-x-[120%] opacity-0 pointer-events-none'
+        }`}
+      >
+        <div className='bg-slate-900/90 border-slate-800 w-full rounded-xl border p-5 shadow-2xl backdrop-blur-md'>
+          <div className='flex items-center justify-between mb-5'>
+            <h3 className='text-slate-500 text-xs font-bold uppercase tracking-widest'>
+              Lab Controls
+            </h3>
+            <span className='flex items-center gap-1 text-[10px] text-emerald-400 font-mono bg-emerald-400/10 px-2 py-1 rounded-full'>
+              <Zap className='w-3 h-3' /> CLICK TO SHOCK
+            </span>
+          </div>
+
+          <div className='mb-6 grid grid-cols-2 gap-2 bg-slate-950 p-1 rounded-lg border border-slate-800'>
+            <button
+              onClick={() => setConfig((prev) => ({ ...prev, mode: 'repel' }))}
+              className={`flex items-center justify-center gap-2 py-2 text-xs font-medium rounded-md transition-all ${
+                config.mode === 'repel'
+                  ? 'bg-slate-800 text-white shadow-sm'
+                  : 'text-slate-500 hover:text-slate-300'
+              }`}
+            >
+              <MousePointer2 className='w-3 h-3' /> Repel
+            </button>
+            <button
+              onClick={() =>
+                setConfig((prev) => ({ ...prev, mode: 'attract' }))
+              }
+              className={`flex items-center justify-center gap-2 py-2 text-xs font-medium rounded-md transition-all ${
+                config.mode === 'attract'
+                  ? 'bg-slate-800 text-white shadow-sm'
+                  : 'text-slate-500 hover:text-slate-300'
+              }`}
+            >
+              <Magnet className='w-3 h-3' /> Attract
+            </button>
+          </div>
+
+          <div className='flex items-center justify-between mb-6 px-1'>
+            <span className='text-slate-300 text-xs'>Motion Trails</span>
+            <button
+              onClick={() =>
+                setConfig((prev) => ({ ...prev, showTrails: !prev.showTrails }))
+              }
+              className={`w-10 h-5 rounded-full transition-colors relative ${
+                config.showTrails ? 'bg-emerald-500' : 'bg-slate-700'
+              }`}
+            >
+              <span
+                className={`absolute top-1 left-1 bg-white w-3 h-3 rounded-full transition-transform ${
+                  config.showTrails ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </button>
+          </div>
+
+          <div className='h-px bg-slate-800 w-full mb-5' />
+
+          <div className='mb-5'>
+            <div className='text-slate-400 mb-2 flex justify-between text-xs'>
+              <span>Density</span>
+              <span className='text-emerald-400 font-mono'>{config.count}</span>
+            </div>
+            <input
+              type='range'
+              min='20'
+              max='300'
+              value={config.count}
+              onChange={(e) =>
+                setConfig({ ...config, count: Number(e.target.value) })
+              }
+              className='accent-emerald-500 bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
+            />
+          </div>
+
+          <div className='mb-5'>
+            <div className='text-slate-400 mb-2 flex justify-between text-xs'>
+              <span>Link Range</span>
+              <span className='text-emerald-400 font-mono'>
+                {config.connectionDist}px
+              </span>
+            </div>
+            <input
+              type='range'
+              min='50'
+              max='250'
+              value={config.connectionDist}
+              onChange={(e) =>
+                setConfig({
+                  ...config,
+                  connectionDist: Number(e.target.value),
+                })
+              }
+              className='accent-emerald-500 bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
+            />
+          </div>
+
+          <div className='mb-5'>
+            <div className='text-slate-400 mb-2 flex justify-between text-xs'>
+              <span>Volatility</span>
+              <span className='text-emerald-400 font-mono'>
+                {config.speed.toFixed(1)}x
+              </span>
+            </div>
+            <input
+              type='range'
+              min='0.1'
+              max='4'
+              step='0.1'
+              value={config.speed}
+              onChange={(e) =>
+                setConfig({ ...config, speed: Number(e.target.value) })
+              }
+              className='accent-emerald-500 bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
+            />
+          </div>
+
+          <div className='mb-5'>
+            <div className='text-slate-400 mb-2 flex justify-between text-xs'>
+              <span>Friction</span>
+              <span className='text-emerald-400 font-mono'>
+                {config.friction.toFixed(2)}
+              </span>
+            </div>
+            <input
+              type='range'
+              min='0.01'
+              max='0.30'
+              step='0.01'
+              value={config.friction}
+              onChange={(e) =>
+                setConfig({ ...config, friction: Number(e.target.value) })
+              }
+              className='accent-emerald-500 bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
+            />
+          </div>
+
+          <div>
+            <div className='text-slate-400 mb-2 text-xs'>Theme</div>
+            <div className='flex gap-3'>
+              {['#64ffda', '#f43f5e', '#3b82f6', '#a855f7'].map((c) => (
+                <button
+                  key={c}
+                  onClick={() => setConfig({ ...config, color: c })}
+                  className={`h-6 w-6 rounded-full border border-slate-600 transition-transform hover:scale-110 ${
+                    config.color === c
+                      ? 'ring-2 ring-white ring-offset-2 ring-offset-slate-900'
+                      : ''
+                  }`}
+                  style={{ backgroundColor: c }}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

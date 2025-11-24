@@ -46,7 +46,7 @@ export default async function LabPage({ params }: PageProps) {
 
       default:
         return (
-          <div className='space-y-4 text-center'>
+          <div className='flex h-screen w-full flex-col items-center justify-center space-y-4'>
             <p className='text-muted-foreground font-mono'>
               Experiment loaded: <span className='text-foreground'>{slug}</span>
             </p>
@@ -59,35 +59,9 @@ export default async function LabPage({ params }: PageProps) {
   };
 
   return (
-    <div className='relative flex h-[calc(100vh-100px)] w-full flex-col'>
+    <>
       {!project.mobileFriendly && <MobileWarning />}
-      <div className='z-10 mb-4 flex flex-col justify-between gap-4 md:flex-row md:items-end'>
-        <div>
-          <h1 className='text-foreground mb-1 text-2xl font-bold'>
-            {project.title}
-          </h1>
-          <p className='text-muted-foreground max-w-lg text-sm'>
-            {project.description}
-          </p>
-        </div>
-
-        <div className='flex gap-2'>
-          {project.repoUrl && (
-            <a
-              href={project.repoUrl}
-              target='_blank'
-              rel='noopener noreferrer'
-              className='border-border hover:bg-muted text-muted-foreground hover:text-foreground rounded-md border px-3 py-1.5 text-xs transition-colors'
-            >
-              View Source
-            </a>
-          )}
-        </div>
-      </div>
-
-      <div className='border-border bg-background relative flex-1 overflow-hidden rounded-lg border shadow-sm'>
-        {renderExperiment()}
-      </div>
-    </div>
+      {renderExperiment()}
+    </>
   );
 }
