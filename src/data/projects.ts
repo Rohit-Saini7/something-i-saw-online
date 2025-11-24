@@ -26,7 +26,7 @@ export const projects: Project[] = [
     date: '2023-12-01',
     featured: true,
     liveUrl: '/lab/text-scramble',
-    mobileFriendly: false,
+    mobileFriendly: true,
   },
   {
     id: '2',
@@ -53,6 +53,6 @@ export const projects: Project[] = [
     featured: true,
     repoUrl: 'https://github.com/Rohit-Saini7/BuddyBills',
     liveUrl: '#',
-    mobileFriendly: false,
+    mobileFriendly: true,
   },
 ];

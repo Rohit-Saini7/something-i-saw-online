@@ -4,7 +4,13 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { projects } from '@/data/projects';
-import { Menu, ArrowLeft, Code2, Info, ExternalLink } from 'lucide-react';
+import {
+  MenuIcon,
+  ArrowLeftIcon,
+  Code2Icon,
+  InfoIcon,
+  ExternalLinkIcon,
+} from 'lucide-react';
 
 import { Button } from '@ui-components/button';
 import {
@@ -45,7 +51,7 @@ export function LabNavbar() {
               size='icon'
               className='h-10 w-10 rounded-full border-slate-700 bg-slate-900/50 text-slate-100 backdrop-blur-md hover:bg-slate-800 hover:text-white'
             >
-              <Menu className='h-5 w-5' />
+              <MenuIcon className='h-5 w-5' />
               <span className='sr-only'>Open menu</span>
             </Button>
           </DropdownMenuTrigger>
@@ -62,7 +68,7 @@ export function LabNavbar() {
               className='cursor-pointer focus:bg-slate-800 focus:text-white'
             >
               <Link href='/lab' className='flex items-center gap-2'>
-                <ArrowLeft className='h-4 w-4' />
+                <ArrowLeftIcon className='h-4 w-4' />
                 <span>Back to Lab</span>
               </Link>
             </DropdownMenuItem>
@@ -71,7 +77,7 @@ export function LabNavbar() {
               onClick={() => setIsDrawerOpen(true)}
               className='cursor-pointer flex items-center gap-2 focus:bg-slate-800 focus:text-white'
             >
-              <Info className='h-4 w-4' />
+              <InfoIcon className='h-4 w-4' />
               <span>Project Info</span>
             </DropdownMenuItem>
 
@@ -88,9 +94,9 @@ export function LabNavbar() {
                     rel='noopener noreferrer'
                     className='flex items-center gap-2'
                   >
-                    <Code2 className='h-4 w-4' />
+                    <Code2Icon className='h-4 w-4' />
                     <span>View Source</span>
-                    <ExternalLink className='ml-auto h-3 w-3 opacity-50' />
+                    <ExternalLinkIcon className='ml-auto h-3 w-3 opacity-50' />
                   </a>
                 </DropdownMenuItem>
               </>
@@ -143,7 +149,7 @@ export function LabNavbar() {
                     target='_blank'
                     rel='noopener noreferrer'
                   >
-                    <Code2 className='mr-2 h-4 w-4' />
+                    <Code2Icon className='mr-2 h-4 w-4' />
                     View Source Code
                   </a>
                 </Button>

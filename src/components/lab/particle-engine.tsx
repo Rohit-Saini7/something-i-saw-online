@@ -1,7 +1,13 @@
 'use client';
 
 import { RefObject, useEffect, useRef, useState } from 'react';
-import { MousePointer2, Magnet, Zap, SlidersHorizontal, X } from 'lucide-react';
+import {
+  MousePointer2Icon,
+  MagnetIcon,
+  ZapIcon,
+  SlidersHorizontalIcon,
+  XIcon,
+} from 'lucide-react';
 
 const mouse = { x: -1000, y: -1000 };
 
@@ -253,9 +259,9 @@ export default function ParticleLab() {
         }`}
       >
         {isControlsOpen ? (
-          <X className='h-5 w-5' />
+          <XIcon className='h-5 w-5' />
         ) : (
-          <SlidersHorizontal className='h-5 w-5' />
+          <SlidersHorizontalIcon className='h-5 w-5' />
         )}
       </button>
 
@@ -268,11 +274,11 @@ export default function ParticleLab() {
       >
         <div className='bg-slate-900/90 border-slate-800 w-full rounded-xl border p-5 shadow-2xl backdrop-blur-md'>
           <div className='flex items-center justify-between mb-5'>
-            <h3 className='text-slate-500 text-xs font-bold uppercase tracking-widest'>
-              Lab Controls
+            <h3 className='text-slate-500 text-xs font-bold uppercase tracking-wide'>
+              Exp Controls
             </h3>
             <span className='flex items-center gap-1 text-[10px] text-emerald-400 font-mono bg-emerald-400/10 px-2 py-1 rounded-full'>
-              <Zap className='w-3 h-3' /> CLICK TO SHOCK
+              <ZapIcon className='w-3 h-3' /> CLICK TO SHOCK
             </span>
           </div>
 
@@ -285,7 +291,7 @@ export default function ParticleLab() {
                   : 'text-slate-500 hover:text-slate-300'
               }`}
             >
-              <MousePointer2 className='w-3 h-3' /> Repel
+              <MousePointer2Icon className='w-3 h-3' /> Repel
             </button>
             <button
               onClick={() =>
@@ -297,7 +303,7 @@ export default function ParticleLab() {
                   : 'text-slate-500 hover:text-slate-300'
               }`}
             >
-              <Magnet className='w-3 h-3' /> Attract
+              <MagnetIcon className='w-3 h-3' /> Attract
             </button>
           </div>
 
