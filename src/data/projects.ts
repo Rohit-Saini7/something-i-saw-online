@@ -25,7 +25,7 @@ export const projects: Project[] = [
     date: '2025-12-01',
     featured: true,
     liveUrl: '/lab/redux-toolkit-time-travel',
-    repoUrl: 'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/src/components/lab/redux-time-travel/toolkit.tsx',
+    repoUrl: 'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/lab/redux-time-travel/toolkit.tsx',
     mobileFriendly: true
   },
   {
@@ -38,7 +38,7 @@ export const projects: Project[] = [
     date: '2025-12-01',
     featured: true,
     liveUrl: '/lab/redux-time-travel',
-    repoUrl: 'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/src/components/lab/redux-time-travel/legacy.tsx',
+    repoUrl: 'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/lab/redux-time-travel/legacy.tsx',
     mobileFriendly: true
   },
   {
