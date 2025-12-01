@@ -4,6 +4,8 @@ import { Metadata } from 'next';
 import ParticleEngine from '@lab-components/particle-engine';
 import TextScramble from '@lab-components/text-scramble';
 import { MobileWarning } from '@lab-components/mobile-warning';
+import ReduxTimeTravelLab from '@lab-components/redux-time-travel/legacy';
+import ReduxToolkitTimeTravelLab from '@lab-components/redux-time-travel/toolkit';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -43,6 +45,10 @@ export default async function LabPage({ params }: PageProps) {
         return <ParticleEngine />;
       case 'text-scramble':
         return <TextScramble />;
+      case 'redux-time-travel-legacy':
+        return <ReduxTimeTravelLab />;
+      case 'redux-time-travel-toolkit':
+        return <ReduxToolkitTimeTravelLab />;
 
       default:
         return (

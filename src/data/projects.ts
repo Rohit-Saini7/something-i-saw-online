@@ -7,7 +7,7 @@ export interface Project {
   description: string;
   type: ProjectType;
   tech: string[];
-  date: string; // YYYY-MM-DD
+  date: string; //? YYYY-MM-DD
   featured: boolean;
   repoUrl?: string;
   liveUrl?: string;
@@ -16,6 +16,32 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: '5',
+    title: 'Temporal State Machine (RTK)',
+    slug: 'redux-time-travel-toolkit',
+    description: 'Refactored version using Redux Toolkit. Showcases createSlice, internal Immer usage for simplified immutability, and reduced boilerplate.',
+    type: 'lab',
+    tech: ['Redux Toolkit', 'React'],
+    date: '2025-12-01',
+    featured: true,
+    liveUrl: '/lab/redux-toolkit-time-travel',
+    repoUrl: 'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/src/components/lab/redux-time-travel/toolkit.tsx',
+    mobileFriendly: true
+  },
+  {
+    id: '4',
+    title: 'Temporal State Machine (Legacy)',
+    slug: 'redux-time-travel-legacy',
+    description: 'A pure Redux implementation showcasing manual immutability, state history, and time-travel debugging without Redux Toolkit.',
+    type: 'lab',
+    tech: ['Redux (Legacy)', 'React'],
+    date: '2025-12-01',
+    featured: true,
+    liveUrl: '/lab/redux-time-travel',
+    repoUrl: 'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/src/components/lab/redux-time-travel/legacy.tsx',
+    mobileFriendly: true
+  },
+  {
     id: '3',
     title: 'Matrix Text Scramble',
     slug: 'text-scramble',
@@ -23,9 +49,10 @@ export const projects: Project[] = [
       'A cyberpunk-inspired text decryption effect using interval mathematics.',
     type: 'lab',
     tech: ['React', 'TypeScript', 'Algorithms'],
-    date: '2023-12-01',
-    featured: true,
+    date: '2025-11-24',
+    featured: false,
     liveUrl: '/lab/text-scramble',
+    repoUrl: 'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/lab/text-scramble.tsx',
     mobileFriendly: true,
   },
   {
@@ -36,9 +63,10 @@ export const projects: Project[] = [
       'A canvas-based 2D physics simulation to test browser performance limits.',
     type: 'lab',
     tech: ['HTML5 Canvas', 'TypeScript', 'Math'],
-    date: '2023-11-15',
+    date: '2025-11-24',
     featured: true,
     liveUrl: '/lab/particle-physics',
+    repoUrl: 'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/lab/particle-engine.tsx',
     mobileFriendly: true,
   },
   {

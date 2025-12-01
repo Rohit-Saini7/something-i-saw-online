@@ -129,11 +129,12 @@ export function LabNavbar() {
                   Tech Stack
                 </h4>
                 <div className='flex gap-2 text-xs text-slate-500 font-mono'>
-                  <span>Typescript</span>
-                  <span>•</span>
-                  <span>Canvas API</span>
-                  <span>•</span>
-                  <span>React Hooks</span>
+                  {project.tech.map((v, i) => (
+                    <React.Fragment key={v}>
+                      <span>{v}</span>
+                      {i < project.tech.length - 1 && <span>•</span>}
+                    </React.Fragment>
+                  ))}
                 </div>
               </div>
             </div>

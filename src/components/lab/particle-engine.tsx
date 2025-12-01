@@ -12,12 +12,12 @@ import {
 const mouse = { x: -1000, y: -1000 };
 
 type ParticlesConfig = {
-  count: number; // Number of dots
-  connectionDist: number; // Max distance to draw lines
-  mouseRepelDist: number; // Radius of mouse influence
-  speed: number; // Velocity multiplier
-  color: string; // Base color (cyan)
-  friction: number; // New config
+  count: number; //? Number of dots
+  connectionDist: number; //? Max distance to draw lines
+  mouseRepelDist: number; //? Radius of mouse influence
+  speed: number; //? Velocity multiplier
+  color: string; //? Base color (cyan)
+  friction: number;
   mode: 'repel' | 'attract';
   showTrails: boolean;
 };
