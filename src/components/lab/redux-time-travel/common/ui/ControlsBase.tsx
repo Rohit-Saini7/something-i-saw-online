@@ -54,8 +54,7 @@ export const ControlsBase = ({
         intervalRef.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isPlaying, onJump, onStep]);
+  }, [isPlaying, onJump, onStep, currentIndex, history.length]);
 
   const copyState = () => {
     const data = JSON.stringify(

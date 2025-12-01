@@ -3,7 +3,7 @@ export const HISTORY_LIMIT = 50;
 
 export const PRESETS = {
   glider: [1, 12, 20, 21, 22],
-  exploder: [4, 14, 24, 34, 44, 4, 6, 44, 46],
+  exploder: [54, 55, 63, 65, 66, 74, 75],
   RS: [
     20, 21, 22, 23, 26, 27, 28, 29, 30,
     33, 36, 40, 42, 43, 46, 47, 50, 51,
