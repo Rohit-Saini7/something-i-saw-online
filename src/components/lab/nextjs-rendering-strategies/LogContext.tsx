@@ -18,7 +18,11 @@ interface LogContextType {
 
 const LogContext = createContext<LogContextType | undefined>(undefined);
 
-export function LogProvider({ children }: { children: React.ReactNode }) {
+export default function LogProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [logs, setLogs] = useState<LogEntry[]>([]);
 
   const addLog = useCallback(

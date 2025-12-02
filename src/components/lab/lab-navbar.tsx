@@ -32,7 +32,7 @@ import {
   DrawerTitle,
 } from '@ui-components/drawer';
 
-export function LabNavbar() {
+export default function LabNavbar() {
   const pathname = usePathname();
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
 
@@ -49,7 +49,7 @@ export function LabNavbar() {
             <Button
               variant='outline'
               size='icon'
-              className='h-10 w-10 rounded-full border-slate-700 bg-slate-900/50 text-slate-100 backdrop-blur-md hover:bg-slate-800 hover:text-white'
+              className='h-10 w-10 rounded-full border-border bg-background/70 backdrop-blur text-foreground hover:bg-accent hover:text-accent-foreground'
             >
               <MenuIcon className='h-5 w-5' />
               <span className='sr-only'>Open menu</span>
@@ -58,15 +58,12 @@ export function LabNavbar() {
 
           <DropdownMenuContent
             align='start'
-            className='w-56 bg-slate-900 border-slate-800 text-slate-200'
+            className='w-56 bg-popover text-popover-foreground border-border'
           >
             <DropdownMenuLabel>Lab Controls</DropdownMenuLabel>
-            <DropdownMenuSeparator className='bg-slate-800' />
+            <DropdownMenuSeparator />
 
-            <DropdownMenuItem
-              asChild
-              className='cursor-pointer focus:bg-slate-800 focus:text-white'
-            >
+            <DropdownMenuItem asChild>
               <Link href='/lab' className='flex items-center gap-2'>
                 <ArrowLeftIcon className='h-4 w-4' />
                 <span>Back to Lab</span>
@@ -75,7 +72,7 @@ export function LabNavbar() {
 
             <DropdownMenuItem
               onClick={() => setIsDrawerOpen(true)}
-              className='cursor-pointer flex items-center gap-2 focus:bg-slate-800 focus:text-white'
+              className='flex items-center gap-2'
             >
               <InfoIcon className='h-4 w-4' />
               <span>Project Info</span>
@@ -83,11 +80,8 @@ export function LabNavbar() {
 
             {project.repoUrl && (
               <>
-                <DropdownMenuSeparator className='bg-slate-800' />
-                <DropdownMenuItem
-                  asChild
-                  className='cursor-pointer focus:bg-slate-800 focus:text-white'
-                >
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
                   <a
                     href={project.repoUrl}
                     target='_blank'
@@ -104,31 +98,26 @@ export function LabNavbar() {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <DrawerContent className='bg-slate-950 border-slate-800 text-slate-100'>
+        <DrawerContent className='bg-background text-foreground border-border'>
           <div className='mx-auto w-full max-w-lg'>
             <DrawerHeader>
               <div className='flex items-center gap-3 mb-2'>
-                <DrawerTitle className='text-2xl font-bold text-white'>
+                <DrawerTitle className='text-2xl font-bold'>
                   {project.title}
                 </DrawerTitle>
-                <Badge
-                  variant='outline'
-                  className='border-emerald-500/50 text-emerald-400'
-                >
-                  Experiment
-                </Badge>
+                <Badge variant='outline'>Experiment</Badge>
               </div>
-              <DrawerDescription className='text-slate-400 text-base leading-relaxed'>
+              <DrawerDescription className='text-muted-foreground text-base leading-relaxed'>
                 {project.description}
               </DrawerDescription>
             </DrawerHeader>
 
             <div className='p-4 pb-0'>
-              <div className='rounded-lg border border-slate-800 bg-slate-900 p-4'>
-                <h4 className='mb-2 text-sm font-medium text-slate-300'>
+              <div className='rounded-lg border border-border bg-muted/30 p-4'>
+                <h4 className='mb-2 text-sm font-medium text-muted-foreground'>
                   Tech Stack
                 </h4>
-                <div className='flex gap-2 text-xs text-slate-500 font-mono'>
+                <div className='flex gap-2 text-xs text-muted-foreground font-mono'>
                   {project.tech.map((v, i) => (
                     <React.Fragment key={v}>
                       <span>{v}</span>
@@ -141,10 +130,7 @@ export function LabNavbar() {
 
             <DrawerFooter>
               {project.repoUrl && (
-                <Button
-                  asChild
-                  className='w-full bg-white text-black hover:bg-slate-200'
-                >
+                <Button asChild className='w-full'>
                   <a
                     href={project.repoUrl}
                     target='_blank'
@@ -156,12 +142,7 @@ export function LabNavbar() {
                 </Button>
               )}
               <DrawerClose asChild>
-                <Button
-                  variant='outline'
-                  className='border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white'
-                >
-                  Close
-                </Button>
+                <Button variant='outline'>Close</Button>
               </DrawerClose>
             </DrawerFooter>
           </div>

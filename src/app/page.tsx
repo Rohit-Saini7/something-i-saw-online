@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { projects } from '@/data/projects';
 import { experience } from '@/data/experience';
+import { OsShortcut } from '@components/command-menu';
 
 export default function Home() {
   const featuredProjects = projects.filter((p) => p.featured);
@@ -51,10 +52,7 @@ export default function Home() {
           </a>
           <div className='bg-border h-4 w-px' />
           <p className='text-muted-foreground text-sm'>
-            <span className='bg-muted border-border mr-2 rounded border px-1.5 py-0.5 font-mono text-xs'>
-              Cmd+K
-            </span>
-            to navigate
+            <OsShortcut /> to navigate
           </p>
         </div>
       </section>

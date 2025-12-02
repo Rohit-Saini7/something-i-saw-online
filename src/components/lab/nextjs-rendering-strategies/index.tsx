@@ -1,19 +1,19 @@
 import { Suspense } from 'react';
-import { CSRCard } from './CSRCard';
-import { ISRCard } from './ISRCard';
-import { SSGCard } from './SSGCard';
-import { SSRCard } from './SSRCard';
 import TimeMetric from './TimeMetric';
 import RefreshControl from './RefreshControl';
 import SystemConsole from './SystemConsole';
-import { LogProvider } from './LogContext';
+import LogProvider from './LogContext';
+import CSRCard from './CSRCard';
+import SSRCard from './SSRCard';
+import SSGCard from './SSGCard';
+import ISRCard from './ISRCard';
 
 export default function TheTimestampTest() {
   return (
     <LogProvider>
       <div className='relative w-full max-w-7xl mx-auto p-4 md:p-8'>
         <div className='mb-12 space-y-4'>
-          <h2 className='text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight'>
+          <h2 className='text-3xl md:text-4xl font-bold text-gray-900 dark:text-white tracking-tight ml-14 mt-2.5 sm:ml-0 sm:mt-0'>
             Rendering Strategies
           </h2>
           <p className='text-gray-600 dark:text-gray-400 max-w-2xl text-lg'>

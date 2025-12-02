@@ -1,7 +1,7 @@
 import { unstable_noStore as noStore } from 'next/cache';
 import TimeMetric from './TimeMetric';
 
-export async function SSRCard() {
+export default async function SSRCard() {
   noStore();
   await new Promise((resolve) => setTimeout(resolve, 2000));
   const time = new Date().toLocaleTimeString();

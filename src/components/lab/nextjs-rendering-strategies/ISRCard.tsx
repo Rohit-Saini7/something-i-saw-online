@@ -7,7 +7,7 @@ const getCachedTime = cache(
   { revalidate: 10 }
 );
 
-export async function ISRCard() {
+export default async function ISRCard() {
   const time = await getCachedTime();
 
   return (

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import TimeMetric from './TimeMetric';
 
-export function CSRCard() {
+export default function CSRCard() {
   const [time, setTime] = useState<string | null>(null);
 
   useEffect(() => {

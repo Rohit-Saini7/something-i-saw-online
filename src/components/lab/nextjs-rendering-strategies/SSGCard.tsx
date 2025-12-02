@@ -1,6 +1,6 @@
 import TimeMetric from './TimeMetric';
 
-export function SSGCard() {
+export default function SSGCard() {
   const time = new Date().toLocaleTimeString();
 
   return (

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { projects } from '@/data/projects';
 import { ArrowRightIcon, FlaskConicalIcon } from 'lucide-react';
+import { OsShortcut } from '@components/command-menu';
 
 export const metadata = {
   title: 'The Lab | Rohit Saini',
@@ -11,22 +12,18 @@ export default function LabGallery() {
   const experiments = projects.filter((p) => p.type === 'lab');
 
   return (
-    <div className='mx-auto max-w-7xl py-12'>
-      <div className='mb-16 space-y-4'>
+    <main className='mx-auto min-h-screen max-w-3xl sm:max-w-7xl space-y-24 px-6 py-12 md:py-20'>
+      <section className='space-y-6'>
         <h1 className='text-4xl font-bold tracking-tighter md:text-6xl'>
           The Laboratory
         </h1>
         <p className='text-muted-foreground max-w-xl text-lg'>
           A collection of isolated web experiments, UI interactions, and physics
-          simulations. Use{' '}
-          <span className='text-foreground border-border rounded border px-1 font-mono text-sm'>
-            Cmd+K
-          </span>{' '}
-          to switch contexts.
+          simulations. Use <OsShortcut /> to switch contexts.
         </p>
-      </div>
+      </section>
 
-      <div className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
+      <section className='grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3'>
         {experiments.map((lab) => (
           <Link
             key={lab.id}
@@ -69,7 +66,7 @@ export default function LabGallery() {
             <p>No experiments initialized yet.</p>
           </div>
         )}
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }

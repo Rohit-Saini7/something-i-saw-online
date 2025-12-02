@@ -3,10 +3,10 @@ import { projects } from '@/data/projects';
 import { Metadata } from 'next';
 import ParticleEngine from '@lab-components/particle-engine';
 import TextScramble from '@lab-components/text-scramble';
-import { MobileWarning } from '@lab-components/mobile-warning';
 import ReduxTimeTravelLab from '@lab-components/redux-time-travel/legacy';
 import ReduxToolkitTimeTravelLab from '@lab-components/redux-time-travel/toolkit';
 import TheTimestampTest from '@lab-components/nextjs-rendering-strategies';
+import MobileWarning from '@lab-components/mobile-warning';
 
 interface PageProps {
   params: Promise<{ slug: string }>;

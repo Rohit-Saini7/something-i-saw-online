@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { MonitorPlayIcon, XIcon } from 'lucide-react';
 
-export function MobileWarning() {
+export default function MobileWarning() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {

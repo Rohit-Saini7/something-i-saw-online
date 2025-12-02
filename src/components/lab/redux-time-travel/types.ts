@@ -1,4 +1,11 @@
-import { EVOLVE, JUMP_TO_TIME, PASTE_PRESET, RESET_GRID, SET_CELL, TOGGLE_CELL } from './common/constants';
+import {
+  EVOLVE,
+  JUMP_TO_TIME,
+  PASTE_PRESET,
+  RESET_GRID,
+  SET_CELL,
+  TOGGLE_CELL,
+} from './common/constants';
 
 export interface GridCellProps {
   index: number;

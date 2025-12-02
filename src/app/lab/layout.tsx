@@ -1,6 +1,6 @@
 'use client';
 
-import { LabNavbar } from '@/components/lab/lab-navbar';
+import LabNavbar from '@lab-components/lab-navbar';
 
 export default function LabLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -22,7 +22,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
 
-export function CommandMenu() {
+export default function CommandMenu() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const router = useRouter();
@@ -190,6 +190,26 @@ export function CommandMenu() {
           </CommandGroup>
         </CommandList>
       </CommandDialog>
+    </>
+  );
+}
+
+import { Kbd, KbdGroup } from '@ui-components/kbd';
+import useOs from '@/hooks/useOs';
+
+export function OsShortcut() {
+  const os = useOs();
+
+  return (
+    <>
+      <KbdGroup className='hidden sm:inline-flex gap-1'>
+        {os === 'mac' ? <Kbd className='text-base'>⌘</Kbd> : <Kbd>Ctrl</Kbd>}
+        <Kbd>K</Kbd>
+      </KbdGroup>
+      <KbdGroup className='sm:hidden text-base'>
+        <Kbd className='text-base'>&lt;</Kbd>
+        <Kbd className='text-base'>&gt;</Kbd>
+      </KbdGroup>
     </>
   );
 }
