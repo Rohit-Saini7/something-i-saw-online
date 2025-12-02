@@ -16,6 +16,19 @@ export interface Project {
 
 export const projects: Project[] = [
   {
+    id: '6',
+    title: 'Rendering Time Travel',
+    slug: 'nextjs-rendering-strategies',
+    description: 'A comparative experiment visualizing the execution timing differences between CSR, SSR, SSG, and ISR. Uses real-time timestamps to demonstrate caching behaviors and hydration lag in the App Router.',
+    type: 'lab',
+    tech: ['Rendering', 'Next.js', 'TypeScript', 'Tailwind CSS'],
+    date: '2025-12-02',
+    featured: true,
+    liveUrl: '/lab/nextjs-rendering-strategies',
+    repoUrl: 'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/lab/nextjs-rendering-strategies/index.tsx',
+    mobileFriendly: true
+  },
+  {
     id: '5',
     title: 'Temporal State Machine (RTK)',
     slug: 'redux-time-travel-toolkit',
@@ -36,7 +49,7 @@ export const projects: Project[] = [
     type: 'lab',
     tech: ['Redux (Legacy)', 'React'],
     date: '2025-12-01',
-    featured: true,
+    featured: false,
     liveUrl: '/lab/redux-time-travel',
     repoUrl: 'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/lab/redux-time-travel/legacy.tsx',
     mobileFriendly: true
@@ -64,7 +77,7 @@ export const projects: Project[] = [
     type: 'lab',
     tech: ['HTML5 Canvas', 'TypeScript', 'Math'],
     date: '2025-11-24',
-    featured: true,
+    featured: false,
     liveUrl: '/lab/particle-physics',
     repoUrl: 'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/lab/particle-engine.tsx',
     mobileFriendly: true,

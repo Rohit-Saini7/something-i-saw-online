@@ -80,7 +80,6 @@ export default function ScrambleLab() {
       config.charSet
     );
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setEncryptedText(newEncrypted);
 
     if (!isDecrypted) {

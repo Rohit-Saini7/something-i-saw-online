@@ -6,6 +6,7 @@ import TextScramble from '@lab-components/text-scramble';
 import { MobileWarning } from '@lab-components/mobile-warning';
 import ReduxTimeTravelLab from '@lab-components/redux-time-travel/legacy';
 import ReduxToolkitTimeTravelLab from '@lab-components/redux-time-travel/toolkit';
+import TheTimestampTest from '@lab-components/nextjs-rendering-strategies';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -49,6 +50,8 @@ export default async function LabPage({ params }: PageProps) {
         return <ReduxTimeTravelLab />;
       case 'redux-time-travel-toolkit':
         return <ReduxToolkitTimeTravelLab />;
+      case 'nextjs-rendering-strategies':
+        return <TheTimestampTest />;
 
       default:
         return (
