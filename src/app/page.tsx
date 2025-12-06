@@ -85,7 +85,7 @@ export default function Home() {
                   )}
                 </div>
                 {project.type === 'lab' && (
-                  <span className='bg-secondary text-secondary-foreground rounded-full px-2 py-1 text-[10px] font-bold tracking-wider uppercase'>
+                  <span className='bg-secondary text-secondary-foreground rounded-full px-2 py-1 text-2xs font-bold tracking-wider uppercase'>
                     Experiment
                   </span>
                 )}
@@ -141,7 +141,7 @@ export default function Home() {
                 {role.tech.slice(0, 4).map((t) => (
                   <span
                     key={t}
-                    className='text-muted-foreground/60 border-border/40 rounded border px-1.5 py-0.5 text-[10px]'
+                    className='text-muted-foreground/60 border-border/40 rounded border px-1.5 py-0.5 text-2xs'
                   >
                     {t}
                   </span>

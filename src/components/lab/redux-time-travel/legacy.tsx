@@ -152,13 +152,7 @@ const ReduxLabContent: React.FC = () => {
       onMouseUp={() => setIsDrawing(false)}
       onMouseLeave={() => setIsDrawing(false)}
     >
-      <div
-        className='absolute inset-0 
-      bg-[linear-gradient(rgba(94,110,133,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(94,110,133,0.07)_1px,transparent_1px)] 
-      dark:bg-[linear-gradient(rgba(16,185,129,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.03)_1px,transparent_1px)] 
-      bg-size-[40px_40px] pointer-events-none'
-      />
-
+      <div className='absolute inset-0 bg-[linear-gradient(rgba(94,110,133,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(94,110,133,0.07)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(16,185,129,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.03)_1px,transparent_1px)] bg-size-[40px_40px] pointer-events-none' />
       <div className='relative mb-24'>
         <div
           className='grid grid-cols-10 gap-1 w-[300px] md:w-[400px] select-none touch-none'

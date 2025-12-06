@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 
 import { PRESETS } from '../constants';
-import { ShortcutsCard } from './ShortcutsCard';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 import {
@@ -28,6 +27,8 @@ import {
   DialogTrigger,
 } from '@ui-components/dialog';
 import { Button } from '@ui-components/button';
+import { useClipboard } from '@/hooks/useClipboard';
+import { Kbd, KbdGroup } from '@ui-components/kbd';
 
 export default function ControlsBase({
   history,
@@ -48,10 +49,11 @@ export default function ControlsBase({
   onJump: (n: number) => void;
   onPreset: (pattern: number[]) => void;
 }) {
+  const copy = useClipboard();
+
   const [isImporting, setIsImporting] = useState(false);
   const [importText, setImportText] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
-  const [showShortcuts, setShowShortcuts] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const togglePlay = useCallback(() => setIsPlaying((p) => !p), []);
@@ -112,8 +114,7 @@ export default function ControlsBase({
     const data = JSON.stringify(
       grid.reduce((acc: number[], v, i) => (v ? [...acc, i] : acc), [])
     );
-    navigator.clipboard.writeText(data);
-    toast.success('Grid state copied to clipboard');
+    copy(data);
   };
 
   const handleImport = () => {
@@ -136,15 +137,11 @@ export default function ControlsBase({
 
   return (
     <div className='absolute bottom-8 left-1/2 -translate-x-1/2 w-full max-w-lg px-6'>
-      {showShortcuts && (
-        <ShortcutsCard onClose={() => setShowShortcuts(false)} />
-      )}
-
       <div className='bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 backdrop-blur-md rounded-xl p-4 shadow-xl dark:shadow-2xl transition-colors duration-300'>
         <div className='flex justify-between items-center mb-4'>
           <div className='flex items-center gap-2 text-slate-500 dark:text-slate-400'>
             <HistoryIcon className='w-4 h-4 text-emerald-600 dark:text-emerald-500' />
-            <span className='text-xs font-mono font-bold uppercase hidden sm:inline'>
+            <span className='text-base font-mono font-bold uppercase hidden sm:inline'>
               Time Machine
             </span>
           </div>
@@ -164,15 +161,30 @@ export default function ControlsBase({
             ))}
 
             <div className='w-px h-4 bg-slate-200 dark:bg-slate-800 mx-1' />
-
-            <button
-              onClick={() => setShowShortcuts(!showShortcuts)}
-              className={`text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors ${
-                showShortcuts ? 'text-emerald-600 dark:text-emerald-400' : ''
-              }`}
-            >
-              <KeyboardIcon className='w-4 h-4' />
-            </button>
+            <Dialog>
+              <DialogTrigger asChild className='hidden md:block'>
+                <button className='text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors'>
+                  <KeyboardIcon className='w-4 h-4' />
+                </button>
+              </DialogTrigger>
+              <DialogContent className='sm:max-w-[425px]'>
+                <DialogHeader className='text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest'>
+                  <DialogTitle>Keyboard</DialogTitle>
+                </DialogHeader>
+                <div className='space-y-2 text-xs font-mono grid grid-cols-2 odd:text-left even:text-right even:text-emerald-600 even:dark:text-emerald-400'>
+                  <Kbd>Space</Kbd>
+                  <span>Play / Pause</span>
+                  <KbdGroup>
+                    <Kbd>←</Kbd> /<Kbd>→</Kbd>
+                  </KbdGroup>
+                  <span>Time Travel</span>
+                  <Kbd>S</Kbd>
+                  <span>Next Gen (Step)</span>
+                  <Kbd>R</Kbd>
+                  <span>Reset</span>
+                </div>
+              </DialogContent>
+            </Dialog>
 
             <button
               onClick={copyState}
@@ -187,7 +199,7 @@ export default function ControlsBase({
                 <DialogTrigger asChild>
                   <button
                     title='Import Grid State'
-                    className='text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors'
+                    className='pt-1 text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors'
                   >
                     <DownloadIcon className='w-4 h-4' />
                   </button>
@@ -200,7 +212,7 @@ export default function ControlsBase({
                     </DialogDescription>
                   </DialogHeader>
                   <textarea
-                    className='w-full h-32 p-3 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg font-mono text-xs resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500'
+                    className='w-full text-base h-32 p-3 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg font-mono resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500'
                     placeholder='[44, 45, 54]'
                     value={importText}
                     onChange={(e) => setImportText(e.target.value)}
@@ -215,7 +227,11 @@ export default function ControlsBase({
                         Cancel
                       </Button>
                     </DialogClose>
-                    <Button type='submit' onClick={handleImport}>
+                    <Button
+                      className='bg-emerald-500 text-white'
+                      type='submit'
+                      onClick={handleImport}
+                    >
                       Load State
                     </Button>
                   </DialogFooter>
@@ -273,7 +289,7 @@ export default function ControlsBase({
 
             <button
               onClick={togglePlay}
-              className={`p-2 px-6 rounded-md flex items-center gap-2 text-xs font-bold transition-all ${
+              className={`p-2 px-6 rounded-md flex items-center gap-2 text-base font-bold transition-all ${
                 isPlaying
                   ? 'bg-emerald-500 text-white dark:text-slate-950 shadow-md dark:shadow-[0_0_15px_rgba(16,185,129,0.4)]'
                   : 'bg-white/99 dark:bg-slate-700 text-slate-700 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-600 shadow-sm dark:shadow-none'

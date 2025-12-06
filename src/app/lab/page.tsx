@@ -50,7 +50,7 @@ export default function LabGallery() {
                 {lab.tech.slice(0, 3).map((t) => (
                   <span
                     key={t}
-                    className='text-muted-foreground border-border bg-muted/50 rounded border px-2 py-1 text-[10px] tracking-wider uppercase'
+                    className='text-muted-foreground border-border bg-muted/50 rounded border px-2 py-1 text-2xs tracking-wider uppercase'
                   >
                     {t}
                   </span>
