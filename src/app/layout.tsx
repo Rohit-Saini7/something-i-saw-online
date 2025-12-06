@@ -5,6 +5,7 @@ import ThemeProvider from '@components/theme-provider';
 import CommandMenu from '@components/command-menu';
 import { Analytics } from '@vercel/analytics/react';
 import { cn } from '@/lib/utils';
+import { Toaster } from '@ui-components/sonner';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 
@@ -35,6 +36,7 @@ export default function RootLayout({
           {children}
           <CommandMenu />
           <Analytics />
+          <Toaster position='bottom-center' richColors />
         </ThemeProvider>
       </body>
     </html>

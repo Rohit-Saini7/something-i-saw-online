@@ -28,11 +28,11 @@ export const GridCell = ({
       onMouseDown={handleDown}
       onMouseEnter={handleEnter}
       className={`
-        aspect-square w-full rounded-sm border border-slate-800 transition-all duration-150 cursor-crosshair
+        aspect-square w-full rounded-sm border transition-all duration-150 cursor-crosshair border-slate-300 dark:border-slate-800
         ${
           active
-            ? 'bg-emerald-500 shadow-[0_0_10px_#10b981] border-emerald-400 scale-95'
-            : 'bg-slate-900 hover:bg-slate-800'
+            ? 'bg-emerald-500 border-emerald-500 scale-95 shadow-sm dark:shadow-[0_0_10px_#10b981] dark:border-emerald-400'
+            : 'bg-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800'
         }
       `}
     />

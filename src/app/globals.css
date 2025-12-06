@@ -44,6 +44,7 @@
   --radius-xl: calc(var(--radius) + 4px);
   --animate-spin-fast: spin 0.5s linear infinite;
   --animate-spin-ultra: spin 0.25s linear infinite;
+  --text-2xs: 0.625rem;
 }
 
 :root {
