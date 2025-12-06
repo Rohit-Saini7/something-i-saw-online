@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 
@@ -117,43 +117,6 @@ const ReduxToolkitLabContent: React.FC = () => {
   const dispatch = useDispatch();
 
   const [isDrawing, setIsDrawing] = useState(false);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
-      )
-        return;
-
-      switch (e.code) {
-        case 'ArrowLeft':
-          e.preventDefault();
-          dispatch(jumpToTime(Math.max(0, store.getState().currentIndex - 1)));
-          break;
-        case 'ArrowRight':
-          e.preventDefault();
-          const st = store.getState();
-          dispatch(
-            jumpToTime(Math.min(st.history.length - 1, st.currentIndex + 1))
-          );
-          break;
-        case 'KeyR':
-          e.preventDefault();
-          dispatch(resetGrid());
-          break;
-        case 'KeyS':
-          e.preventDefault();
-          dispatch(evolve());
-          break;
-        default:
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [dispatch]);
 
   const onScrub = (n: number) => dispatch(jumpToTime(n));
   const onReset = () => dispatch(resetGrid());

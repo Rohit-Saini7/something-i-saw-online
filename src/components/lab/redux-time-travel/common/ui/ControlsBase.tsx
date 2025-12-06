@@ -14,7 +14,7 @@ import {
 
 import { PRESETS } from '../constants';
 import { ShortcutsCard } from './ShortcutsCard';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 
 export const ControlsBase = ({
@@ -40,22 +40,59 @@ export const ControlsBase = ({
   const [showShortcuts, setShowShortcuts] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+  const togglePlay = useCallback(() => setIsPlaying((p) => !p), []);
+
+  const stepForward = useCallback(() => {
+    const next = currentIndex + 1;
+    if (next < history.length) onJump(next);
+    else onStep();
+  }, [currentIndex, history.length, onJump, onStep]);
+
+  const stepBack = useCallback(() => {
+    onJump(Math.max(0, currentIndex - 1));
+  }, [currentIndex, onJump]);
+
   useEffect(() => {
     if (isPlaying) {
-      intervalRef.current = setInterval(() => {
-        const next = currentIndex + 1;
-        if (next < history.length) onJump(next);
-        else onStep();
-      }, 150);
+      intervalRef.current = setInterval(stepForward, 150);
     }
-
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [isPlaying, stepForward]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.target instanceof HTMLInputElement ||
+        e.target instanceof HTMLTextAreaElement
+      )
+        return;
+
+      switch (e.code) {
+        case 'Space':
+          e.preventDefault();
+          togglePlay();
+          break;
+        case 'ArrowLeft':
+          if (!isPlaying) stepBack();
+          break;
+        case 'ArrowRight':
+          if (!isPlaying) stepForward();
+          break;
+        case 'KeyS':
+          if (!isPlaying) onStep();
+          break;
+        case 'KeyR':
+          onReset();
+          setIsPlaying(false);
+          break;
       }
     };
-  }, [isPlaying, onJump, onStep, currentIndex, history.length]);
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isPlaying, stepBack, stepForward, togglePlay, onReset, onStep]);
 
   const copyState = () => {
     const data = JSON.stringify(
@@ -84,7 +121,10 @@ export const ControlsBase = ({
             {Object.entries(PRESETS).map(([name, pattern]) => (
               <button
                 key={name}
-                onClick={() => onPreset(pattern)}
+                onClick={() => {
+                  onPreset(pattern);
+                  setIsPlaying(false);
+                }}
                 className='text-2xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1 rounded hover:bg-emerald-500/10 dark:hover:bg-emerald-500/20 hover:text-emerald-600 dark:hover:text-emerald-400 uppercase font-mono tracking-wide transition-colors'
               >
                 {name}
@@ -117,7 +157,10 @@ export const ControlsBase = ({
             min={0}
             max={history.length - 1}
             value={currentIndex}
-            onChange={(e) => onScrub(Number(e.target.value))}
+            onChange={(e) => {
+              onScrub(Number(e.target.value));
+              setIsPlaying(false);
+            }}
             className='w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500'
           />
           <div className='absolute top-3 left-0 right-0 h-2 flex justify-between pointer-events-none px-1'>
@@ -136,7 +179,10 @@ export const ControlsBase = ({
 
         <div className='flex justify-between items-center'>
           <button
-            onClick={onReset}
+            onClick={() => {
+              onReset();
+              setIsPlaying(false);
+            }}
             className='p-2 rounded-md hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 text-slate-400 dark:text-slate-500 transition-colors'
           >
             <Trash2Icon className='w-4 h-4' />
@@ -144,7 +190,7 @@ export const ControlsBase = ({
 
           <div className='flex items-center gap-3 bg-slate-100 dark:bg-slate-800/50 p-1 rounded-lg transition-colors'>
             <button
-              onClick={() => onJump(Math.max(0, currentIndex - 1))}
+              onClick={stepBack}
               disabled={currentIndex === 0}
               className='p-2 hover:text-slate-900 dark:hover:text-white text-slate-400 disabled:opacity-30 transition-colors'
             >
@@ -152,11 +198,11 @@ export const ControlsBase = ({
             </button>
 
             <button
-              onClick={() => setIsPlaying(!isPlaying)}
-              className={`p-2 px-6 rounded-md flex items-center justify-center gap-2 text-xs font-bold transition-all ${
+              onClick={togglePlay}
+              className={`p-2 px-6 rounded-md flex items-center gap-2 text-xs font-bold transition-all ${
                 isPlaying
                   ? 'bg-emerald-500 text-white dark:text-slate-950 shadow-md dark:shadow-[0_0_15px_rgba(16,185,129,0.4)]'
-                  : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-600 shadow-sm dark:shadow-none'
+                  : 'bg-white/99 dark:bg-slate-700 text-slate-700 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-600 shadow-sm dark:shadow-none'
               }`}
             >
               {isPlaying ? (
@@ -167,9 +213,7 @@ export const ControlsBase = ({
             </button>
 
             <button
-              onClick={() =>
-                onJump(Math.min(history.length - 1, currentIndex + 1))
-              }
+              onClick={stepForward}
               disabled={currentIndex === history.length - 1}
               className='p-2 hover:text-slate-900 dark:hover:text-white text-slate-400 disabled:opacity-30 transition-colors'
             >

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { legacy_createStore as createStore } from 'redux';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import {
@@ -123,47 +123,6 @@ const ReduxLabContent: React.FC = () => {
   const dispatch = useDispatch();
 
   const [isDrawing, setIsDrawing] = useState(false);
-
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (
-        e.target instanceof HTMLInputElement ||
-        e.target instanceof HTMLTextAreaElement
-      )
-        return;
-
-      switch (e.code) {
-        case 'ArrowLeft':
-          e.preventDefault();
-          dispatch({
-            type: JUMP_TO_TIME,
-            payload: Math.max(0, store.getState().currentIndex - 1),
-          });
-          break;
-        case 'ArrowRight':
-          e.preventDefault();
-          const st = store.getState();
-          dispatch({
-            type: JUMP_TO_TIME,
-            payload: Math.min(st.history.length - 1, st.currentIndex + 1),
-          });
-          break;
-        case 'KeyR':
-          e.preventDefault();
-          dispatch({ type: RESET_GRID });
-          break;
-        case 'KeyS':
-          e.preventDefault();
-          dispatch({ type: EVOLVE });
-          break;
-        default:
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [dispatch]);
 
   const toggleCell = (index: number) => ({ type: TOGGLE_CELL, payload: index });
   const setCell = (payload: { index: number; value: boolean }) => ({
