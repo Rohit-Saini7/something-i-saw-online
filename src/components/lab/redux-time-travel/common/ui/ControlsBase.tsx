@@ -10,12 +10,24 @@ import {
   CpuIcon,
   Share2Icon,
   KeyboardIcon,
+  DownloadIcon,
 } from 'lucide-react';
 
 import { PRESETS } from '../constants';
 import { ShortcutsCard } from './ShortcutsCard';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@ui-components/dialog';
+import { Button } from '@ui-components/button';
 
 export default function ControlsBase({
   history,
@@ -36,6 +48,8 @@ export default function ControlsBase({
   onJump: (n: number) => void;
   onPreset: (pattern: number[]) => void;
 }) {
+  const [isImporting, setIsImporting] = useState(false);
+  const [importText, setImportText] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -102,6 +116,24 @@ export default function ControlsBase({
     toast.success('Grid state copied to clipboard');
   };
 
+  const handleImport = () => {
+    try {
+      const parsed = JSON.parse(importText);
+      if (Array.isArray(parsed) && parsed.every((n) => typeof n === 'number')) {
+        onPreset(parsed);
+        setIsImporting(false);
+        setImportText('');
+      } else {
+        toast.error(
+          'Invalid format. Expecting an array of numbers like [1, 5, 10]'
+        );
+      }
+    } catch (e: unknown) {
+      console.error('Error while parsing JSON in ControlsBase:', importText, e);
+      toast.error('Invalid JSON.');
+    }
+  };
+
   return (
     <div className='absolute bottom-8 left-1/2 -translate-x-1/2 w-full max-w-lg px-6'>
       {showShortcuts && (
@@ -139,15 +171,57 @@ export default function ControlsBase({
                 showShortcuts ? 'text-emerald-600 dark:text-emerald-400' : ''
               }`}
             >
-              <KeyboardIcon className='w-3 h-3' />
+              <KeyboardIcon className='w-4 h-4' />
             </button>
 
             <button
               onClick={copyState}
+              title='Export Grid State'
               className='text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors'
             >
-              <Share2Icon className='w-3 h-3' />
+              <Share2Icon className='w-4 h-4' />
             </button>
+
+            <Dialog open={isImporting} onOpenChange={setIsImporting}>
+              <form>
+                <DialogTrigger asChild>
+                  <button
+                    title='Import Grid State'
+                    className='text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors'
+                  >
+                    <DownloadIcon className='w-4 h-4' />
+                  </button>
+                </DialogTrigger>
+                <DialogContent className='sm:max-w-[425px]'>
+                  <DialogHeader>
+                    <DialogTitle>Import Grid State</DialogTitle>
+                    <DialogDescription>
+                      Paste state array here...
+                    </DialogDescription>
+                  </DialogHeader>
+                  <textarea
+                    className='w-full h-32 p-3 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg font-mono text-xs resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500'
+                    placeholder='[44, 45, 54]'
+                    value={importText}
+                    onChange={(e) => setImportText(e.target.value)}
+                    autoFocus
+                  />
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button
+                        variant='outline'
+                        onClick={() => setImportText('')}
+                      >
+                        Cancel
+                      </Button>
+                    </DialogClose>
+                    <Button type='submit' onClick={handleImport}>
+                      Load State
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </form>
+            </Dialog>
           </div>
         </div>
 
