@@ -38,7 +38,7 @@ type ScrambleConfig = {
 };
 
 const CRTOverlay = () => (
-  <div className='pointer-events-none absolute inset-0 z-50 overflow-hidden opacity-40'>
+  <div className='pointer-events-none absolute inset-0 z-60 overflow-hidden opacity-40'>
     <div className='absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-size-[100%_4px,3px_100%]' />
     <div className='absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_50%,rgba(0,0,0,0.4)_100%)]' />
   </div>
@@ -160,7 +160,7 @@ export default function ScrambleLab() {
   };
 
   return (
-    <div className='relative h-screen w-screen bg-slate-950 flex flex-col items-center justify-center overflow-hidden font-mono'>
+    <div className='relative h-screen w-screen bg-background flex flex-col items-center justify-center overflow-hidden font-mono transition-colors'>
       {config.crt && <CRTOverlay />}
 
       <div className='relative z-10 p-8 text-center w-full'>
@@ -168,8 +168,8 @@ export default function ScrambleLab() {
           <div
             className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold tracking-widest border transition-all duration-500 ${
               isDecrypted
-                ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400'
-                : 'border-slate-700 bg-slate-900/50 text-slate-500'
+                ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+                : 'border-slate-300 bg-slate-200/50 text-slate-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-500'
             }`}
           >
             {isDecrypted ? (
@@ -181,13 +181,14 @@ export default function ScrambleLab() {
           </div>
         </div>
 
-        <div
+        <button
+          type='button'
           onClick={handleClick}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
-          className='text-4xl md:text-7xl lg:text-8xl font-black tracking-tighter cursor-pointer select-none transition-all duration-300 wrap-break-word'
+          className='text-4xl md:text-7xl lg:text-8xl font-black tracking-tighter cursor-pointer select-none transition-all duration-300 wrap-break-word w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg'
           style={{
-            color: isDecrypted ? config.color : '#475569',
+            color: isDecrypted ? config.color : undefined,
             textShadow:
               config.glow && isDecrypted
                 ? `0 0 20px ${config.color}, 0 0 40px ${config.color}80`
@@ -196,9 +197,9 @@ export default function ScrambleLab() {
           }}
         >
           {displayText}
-        </div>
+        </button>
 
-        <div className='mt-8 flex justify-center gap-2 opacity-50 text-xs tracking-[0.2em] text-slate-400'>
+        <div className='mt-8 flex justify-center gap-2 opacity-50 text-sm tracking-[0.2em]'>
           <span>{isDecrypted ? 'LEAVE' : 'HOVER'}</span>
           <span>/</span>
           <span>CLICK TO {isDecrypted ? 'ENCRYPT' : 'DECRYPT'}</span>
@@ -209,10 +210,10 @@ export default function ScrambleLab() {
 
       <button
         onClick={() => setIsControlsOpen(!isControlsOpen)}
-        className={`fixed top-6 right-6 z-60 flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 backdrop-blur-md transition-all duration-300 hover:bg-slate-800 ${
+        className={`fixed top-6 right-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 hover:bg-slate-200 dark:hover:bg-slate-800 ${
           isControlsOpen
-            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/50'
-            : 'bg-slate-900/50 text-slate-400'
+            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/50'
+            : 'bg-white/50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
         }`}
       >
         {isControlsOpen ? (
@@ -229,7 +230,7 @@ export default function ScrambleLab() {
             : 'translate-x-[120%] opacity-0 pointer-events-none'
         }`}
       >
-        <div className='bg-slate-900/95 border-slate-800 w-full rounded-xl border p-5 shadow-2xl backdrop-blur-md'>
+        <div className='bg-white/95 dark:bg-slate-900/95 border-slate-200 dark:border-slate-800 w-full rounded-xl border p-5 shadow-2xl backdrop-blur-md'>
           <div className='flex items-center justify-between mb-5'>
             <h3 className='text-slate-500 text-xs font-bold uppercase tracking-widest'>
               Decryption Protocol
@@ -238,7 +239,7 @@ export default function ScrambleLab() {
               onClick={() =>
                 triggerScramble(isDecrypted ? config.text : encryptedText)
               }
-              className='text-emerald-400 hover:text-emerald-300 transition-colors'
+              className='text-emerald-500 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-colors'
               title='Re-run Sequence'
             >
               <RefreshCcwIcon className='h-4 w-4' />
@@ -246,7 +247,7 @@ export default function ScrambleLab() {
           </div>
 
           <div className='mb-5'>
-            <div className='text-slate-400 mb-2 flex justify-between text-xs'>
+            <div className='text-slate-500 dark:text-slate-400 mb-2 flex justify-between text-xs'>
               <span>Target Payload</span>
             </div>
             <div className='relative'>
@@ -257,14 +258,16 @@ export default function ScrambleLab() {
                   setConfig({ ...config, text: e.target.value.toUpperCase() })
                 }
                 maxLength={20}
-                className='w-full bg-slate-950 border border-slate-800 rounded-lg py-2 pl-3 pr-10 text-sm text-slate-200 focus:outline-none focus:border-emerald-500/50 font-mono tracking-widest uppercase'
+                className='w-full bg-slate-100 dark:bg-background border border-slate-200 dark:border-slate-800 rounded-lg py-2 pl-3 pr-10 text-sm text-slate-900 dark:text-slate-200 focus:outline-none focus:border-emerald-500/50 font-mono tracking-widest uppercase'
               />
-              <TypeIcon className='absolute right-3 top-2.5 h-4 w-4 text-slate-600' />
+              <TypeIcon className='absolute right-3 top-2.5 h-4 w-4 text-slate-400 dark:text-slate-600' />
             </div>
           </div>
 
           <div className='mb-5'>
-            <div className='text-slate-400 mb-2 text-xs'>Encryption Cipher</div>
+            <div className='text-slate-500 dark:text-slate-400 mb-2 text-xs'>
+              Encryption Cipher
+            </div>
             <div className='grid grid-cols-4 gap-2'>
               {[
                 { id: 'chaos', icon: ZapIcon },
@@ -279,8 +282,8 @@ export default function ScrambleLab() {
                   }
                   className={`flex items-center justify-center h-9 rounded-md border transition-all ${
                     config.charSet === item.id
-                      ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400'
-                      : 'bg-slate-800 border-transparent text-slate-500 hover:bg-slate-700'
+                      ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400'
+                      : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
                   }`}
                   title={item.id.toUpperCase()}
                 >
@@ -291,7 +294,9 @@ export default function ScrambleLab() {
           </div>
 
           <div className='mb-5'>
-            <div className='text-slate-400 mb-2 text-xs'>Reveal Logic</div>
+            <div className='text-slate-500 dark:text-slate-400 mb-2 text-xs'>
+              Reveal Logic
+            </div>
             <div className='grid grid-cols-3 gap-2'>
               {[
                 { id: 'start', icon: ArrowRightIcon, label: 'Linear' },
@@ -305,8 +310,8 @@ export default function ScrambleLab() {
                   }
                   className={`flex items-center justify-center h-9 rounded-md border transition-all ${
                     config.revealMode === item.id
-                      ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400'
-                      : 'bg-slate-800 border-transparent text-slate-500 hover:bg-slate-700'
+                      ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400'
+                      : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
                   }`}
                   title={item.label}
                 >
@@ -317,9 +322,9 @@ export default function ScrambleLab() {
           </div>
 
           <div className='mb-5'>
-            <div className='text-slate-400 mb-2 flex justify-between text-xs'>
+            <div className='text-slate-500 dark:text-slate-400 mb-2 flex justify-between text-xs'>
               <span>Decryption Speed</span>
-              <span className='text-emerald-400 font-mono'>
+              <span className='text-emerald-500 dark:text-emerald-400 font-mono'>
                 {(config.speed * 100).toFixed(0)}%
               </span>
             </div>
@@ -332,24 +337,26 @@ export default function ScrambleLab() {
               onChange={(e) =>
                 setConfig({ ...config, speed: Number(e.target.value) })
               }
-              className='accent-emerald-500 bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
+              className='accent-emerald-500 bg-slate-200 dark:bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
             />
           </div>
 
-          <div className='h-px bg-slate-800 w-full mb-5' />
+          <div className='h-px bg-slate-200 dark:bg-slate-800 w-full mb-5' />
 
           <div className='space-y-3'>
             <div className='flex items-center justify-between'>
-              <span className='text-xs text-slate-400'>System Color</span>
+              <span className='text-xs text-slate-500 dark:text-slate-400'>
+                System Color
+              </span>
               <div className='flex gap-2'>
                 {['#10b981', '#ef4444', '#3b82f6', '#f59e0b', '#ec4899'].map(
                   (c) => (
                     <button
                       key={c}
                       onClick={() => setConfig({ ...config, color: c })}
-                      className={`h-4 w-4 rounded-full border border-slate-600 transition-transform hover:scale-110 ${
+                      className={`h-4 w-4 rounded-full border border-slate-300 dark:border-slate-600 transition-transform hover:scale-110 ${
                         config.color === c
-                          ? 'ring-2 ring-white ring-offset-2 ring-offset-slate-900'
+                          ? 'ring-2 ring-white dark:ring-white ring-offset-2 ring-offset-slate-100 dark:ring-offset-slate-900'
                           : ''
                       }`}
                       style={{ backgroundColor: c }}
@@ -364,8 +371,8 @@ export default function ScrambleLab() {
                 onClick={() => setConfig({ ...config, glow: !config.glow })}
                 className={`flex-1 text-xs py-1.5 rounded-md border transition-colors ${
                   config.glow
-                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400'
-                    : 'bg-slate-800 border-slate-700 text-slate-500'
+                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400'
+                    : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500'
                 }`}
               >
                 GLOW {config.glow ? 'ON' : 'OFF'}
@@ -374,8 +381,8 @@ export default function ScrambleLab() {
                 onClick={() => setConfig({ ...config, crt: !config.crt })}
                 className={`flex-1 flex items-center justify-center gap-2 text-xs py-1.5 rounded-md border transition-colors ${
                   config.crt
-                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-400'
-                    : 'bg-slate-800 border-slate-700 text-slate-500'
+                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400'
+                    : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500'
                 }`}
               >
                 <MonitorIcon className='h-3 w-3' />

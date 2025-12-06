@@ -135,7 +135,7 @@ const ReduxToolkitLabContent: React.FC = () => {
 
   return (
     <div
-      className='relative h-screen w-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 flex flex-col items-center justify-center overflow-hidden font-mono'
+      className='relative h-screen w-screen bg-background text-slate-900 dark:text-slate-50 flex flex-col items-center justify-center overflow-hidden font-mono'
       onMouseDown={() => setIsDrawing(true)}
       onMouseUp={() => setIsDrawing(false)}
       onMouseLeave={() => setIsDrawing(false)}

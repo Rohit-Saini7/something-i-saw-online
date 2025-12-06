@@ -212,7 +212,7 @@ export default function ControlsBase({
                     </DialogDescription>
                   </DialogHeader>
                   <textarea
-                    className='w-full text-base h-32 p-3 bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-700 rounded-lg font-mono resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500'
+                    className='w-full text-base h-32 p-3 bg-background border border-slate-300 dark:border-slate-700 rounded-lg font-mono resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500'
                     placeholder='[44, 45, 54]'
                     value={importText}
                     onChange={(e) => setImportText(e.target.value)}

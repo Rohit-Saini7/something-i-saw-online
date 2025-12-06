@@ -243,7 +243,7 @@ export default function ParticleLab() {
   return (
     <div
       ref={containerRef}
-      className='bg-slate-950 relative h-screen w-screen overflow-hidden'
+      className='bg-background relative h-screen w-screen overflow-hidden'
     >
       <canvas
         ref={canvasRef}
@@ -277,12 +277,12 @@ export default function ParticleLab() {
             <h3 className='text-slate-500 text-xs font-bold uppercase tracking-wide'>
               Exp Controls
             </h3>
-            <span className='flex items-center gap-1 text-[10px] text-emerald-400 font-mono bg-emerald-400/10 px-2 py-1 rounded-full'>
+            <span className='flex items-center gap-1 text-2xs text-emerald-400 font-mono bg-emerald-400/10 px-2 py-1 rounded-full'>
               <ZapIcon className='w-3 h-3' /> CLICK TO SHOCK
             </span>
           </div>
 
-          <div className='mb-6 grid grid-cols-2 gap-2 bg-slate-950 p-1 rounded-lg border border-slate-800'>
+          <div className='mb-6 grid grid-cols-2 gap-2 bg-background p-1 rounded-lg border border-slate-800'>
             <button
               onClick={() => setConfig((prev) => ({ ...prev, mode: 'repel' }))}
               className={`flex items-center justify-center gap-2 py-2 text-xs font-medium rounded-md transition-all ${
