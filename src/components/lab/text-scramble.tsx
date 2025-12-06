@@ -82,12 +82,13 @@ export default function ScrambleLab() {
 
     setEncryptedText(newEncrypted);
 
-    if (!isDecrypted) {
-      setDisplayText(newEncrypted);
-    } else {
+    if (isDecrypted) {
       setDisplayText(config.text);
+    } else {
+      setDisplayText(newEncrypted);
     }
-  }, [config.text, config.charSet, isDecrypted, generateRandomString]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config.text, config.charSet, generateRandomString]);
 
   const triggerScramble = (targetText: string) => {
     const chars = CHAR_SETS[config.charSet];
@@ -114,9 +115,9 @@ export default function ScrambleLab() {
       setDisplayText(() =>
         targetText
           .split('')
-          .map((_letter, index) => {
+          .map((letter, index) => {
             if (solvedIndices.has(index)) {
-              return targetText[index];
+              return letter;
             }
             return chars[Math.floor(Math.random() * chars.length)];
           })
