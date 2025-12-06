@@ -17,7 +17,7 @@ import { ShortcutsCard } from './ShortcutsCard';
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { toast } from 'sonner';
 
-export const ControlsBase = ({
+export default function ControlsBase({
   history,
   currentIndex,
   grid,
@@ -35,7 +35,7 @@ export const ControlsBase = ({
   onStep: () => void;
   onJump: (n: number) => void;
   onPreset: (pattern: number[]) => void;
-}) => {
+}) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -231,4 +231,4 @@ export const ControlsBase = ({
       </div>
     </div>
   );
-};
+}

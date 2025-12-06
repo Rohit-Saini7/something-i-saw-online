@@ -5,9 +5,9 @@ import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 
 import { GRID_SIZE, HISTORY_LIMIT } from './common/constants';
-import { countNeighbors } from './common/utils';
-import { GridCell } from './common/ui/GridCell';
-import { ControlsBase } from './common/ui/ControlsBase';
+import countNeighbors from './common/utils';
+import GridCell from './common/ui/GridCell';
+import ControlsBase from './common/ui/ControlsBase';
 
 type AppState = {
   grid: boolean[];

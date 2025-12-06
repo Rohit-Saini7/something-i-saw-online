@@ -13,10 +13,10 @@ import {
 } from './common/constants';
 
 import { GRID_SIZE, HISTORY_LIMIT } from './common/constants';
-import { countNeighbors } from './common/utils';
-import { GridCell } from './common/ui/GridCell';
-import { ControlsBase } from './common/ui/ControlsBase';
+import countNeighbors from './common/utils';
+import ControlsBase from './common/ui/ControlsBase';
 import { rootReducerActionType } from './types';
+import GridCell from './common/ui/GridCell';
 
 type AppState = {
   grid: boolean[];

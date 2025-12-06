@@ -2,14 +2,15 @@
 
 import { GridCellProps } from '@lab-components/redux-time-travel/types';
 import { useDispatch } from 'react-redux';
+import { memo } from 'react';
 
-export const GridCell = ({
+function GridCellComponent({
   index,
   active,
   isDrawing,
   setCell,
   toggleCell,
-}: GridCellProps) => {
+}: GridCellProps) {
   const dispatch = useDispatch();
 
   const handleEnter = () => {
@@ -37,4 +38,10 @@ export const GridCell = ({
       `}
     />
   );
-};
+}
+
+const GridCell = memo(GridCellComponent, (prev, next) => {
+  return prev.active === next.active && prev.isDrawing === next.isDrawing;
+});
+
+export default GridCell;

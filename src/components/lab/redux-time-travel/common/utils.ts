@@ -1,4 +1,4 @@
-export function countNeighbors(grid: boolean[], index: number): number {
+export default function countNeighbors(grid: boolean[], index: number): number {
   const size = Math.sqrt(grid.length);
   const row = Math.floor(index / size);
   const col = index % size;
