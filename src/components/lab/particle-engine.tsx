@@ -1,6 +1,7 @@
 'use client';
 
 import { RefObject, useEffect, useRef, useState } from 'react';
+import { useTheme } from 'next-themes';
 import {
   MousePointer2Icon,
   MagnetIcon,
@@ -100,6 +101,7 @@ class Particle {
 }
 
 export default function ParticleLab() {
+  const { resolvedTheme } = useTheme();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -163,12 +165,16 @@ export default function ParticleLab() {
       const cfg = configRef.current;
 
       if (particles.length !== cfg.count) initParticles();
+      const isDark = resolvedTheme === 'dark';
 
       if (cfg.showTrails) {
-        ctx.fillStyle = 'rgba(2, 6, 23, 0.2)';
+        ctx.fillStyle = isDark
+          ? 'rgba(2, 6, 23, 0.2)'
+          : 'rgba(255, 255, 255, 0.2)';
         ctx.fillRect(0, 0, w, h);
       } else {
-        ctx.clearRect(0, 0, w, h);
+        ctx.fillStyle = isDark ? 'rgb(2, 6, 23)' : 'rgb(255, 255, 255)';
+        ctx.fillRect(0, 0, w, h);
       }
 
       particles.forEach((p, i) => {
@@ -217,10 +223,7 @@ export default function ParticleLab() {
       const rect = canvas.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const clickY = e.clientY - rect.top;
-
-      particlesRef.current.forEach((p: Particle) => {
-        p.explode(clickX, clickY);
-      });
+      particlesRef.current.forEach((p: Particle) => p.explode(clickX, clickY));
     };
 
     window.addEventListener('resize', handleResize);
@@ -238,12 +241,12 @@ export default function ParticleLab() {
       canvas.removeEventListener('mousedown', handleClick);
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [resolvedTheme]);
 
   return (
     <div
       ref={containerRef}
-      className='bg-background relative h-screen w-screen overflow-hidden'
+      className='relative h-screen w-screen overflow-hidden bg-background transition-colors duration-300'
     >
       <canvas
         ref={canvasRef}
@@ -252,10 +255,10 @@ export default function ParticleLab() {
 
       <button
         onClick={() => setIsControlsOpen(!isControlsOpen)}
-        className={`fixed top-6 right-6 z-40 flex h-10 w-10 items-center justify-center rounded-full border border-slate-700 backdrop-blur-md transition-all duration-300 hover:bg-slate-800 ${
+        className={`fixed top-6 right-6 z-40 flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 shadow-lg ${
           isControlsOpen
-            ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/50'
-            : 'bg-slate-900/50 text-slate-400'
+            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/50'
+            : 'bg-background/80 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
         }`}
       >
         {isControlsOpen ? (
@@ -272,23 +275,23 @@ export default function ParticleLab() {
             : 'translate-x-[120%] opacity-0 pointer-events-none'
         }`}
       >
-        <div className='bg-slate-900/90 border-slate-800 w-full rounded-xl border p-5 shadow-2xl backdrop-blur-md'>
+        <div className='w-full rounded-xl border p-5 shadow-2xl backdrop-blur-md bg-background/90 border-slate-200 dark:border-slate-800 transition-colors'>
           <div className='flex items-center justify-between mb-5'>
-            <h3 className='text-slate-500 text-xs font-bold uppercase tracking-wide'>
+            <h3 className='text-slate-500 dark:text-slate-500 text-xs font-bold uppercase tracking-wide'>
               Exp Controls
             </h3>
-            <span className='flex items-center gap-1 text-2xs text-emerald-400 font-mono bg-emerald-400/10 px-2 py-1 rounded-full'>
+            <span className='flex items-center gap-1 text-2xs text-emerald-600 dark:text-emerald-400 font-mono bg-emerald-100 dark:bg-emerald-400/10 px-2 py-1 rounded-full'>
               <ZapIcon className='w-3 h-3' /> CLICK TO SHOCK
             </span>
           </div>
 
-          <div className='mb-6 grid grid-cols-2 gap-2 bg-background p-1 rounded-lg border border-slate-800'>
+          <div className='mb-6 grid grid-cols-2 gap-2 bg-slate-100 dark:bg-black/20 p-1 rounded-lg border border-slate-200 dark:border-slate-800'>
             <button
               onClick={() => setConfig((prev) => ({ ...prev, mode: 'repel' }))}
               className={`flex items-center justify-center gap-2 py-2 text-xs font-medium rounded-md transition-all ${
                 config.mode === 'repel'
-                  ? 'bg-slate-800 text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-300'
+                  ? 'bg-white/99 dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
               }`}
             >
               <MousePointer2Icon className='w-3 h-3' /> Repel
@@ -299,8 +302,8 @@ export default function ParticleLab() {
               }
               className={`flex items-center justify-center gap-2 py-2 text-xs font-medium rounded-md transition-all ${
                 config.mode === 'attract'
-                  ? 'bg-slate-800 text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-300'
+                  ? 'bg-white/99 dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
               }`}
             >
               <MagnetIcon className='w-3 h-3' /> Attract
@@ -308,117 +311,128 @@ export default function ParticleLab() {
           </div>
 
           <div className='flex items-center justify-between mb-6 px-1'>
-            <span className='text-slate-300 text-xs'>Motion Trails</span>
+            <span className='text-slate-600 dark:text-slate-300 text-xs'>
+              Motion Trails
+            </span>
             <button
               onClick={() =>
                 setConfig((prev) => ({ ...prev, showTrails: !prev.showTrails }))
               }
               className={`w-10 h-5 rounded-full transition-colors relative ${
-                config.showTrails ? 'bg-emerald-500' : 'bg-slate-700'
+                config.showTrails
+                  ? 'bg-emerald-500'
+                  : 'bg-slate-300 dark:bg-slate-700'
               }`}
             >
               <span
-                className={`absolute top-1 left-1 bg-white w-3 h-3 rounded-full transition-transform ${
+                className={`absolute top-1 left-1 bg-white/99 w-3 h-3 rounded-full transition-transform ${
                   config.showTrails ? 'translate-x-5' : 'translate-x-0'
                 }`}
               />
             </button>
           </div>
 
-          <div className='h-px bg-slate-800 w-full mb-5' />
+          <div className='h-px bg-slate-200 dark:bg-slate-800 w-full mb-5' />
 
-          <div className='mb-5'>
-            <div className='text-slate-400 mb-2 flex justify-between text-xs'>
-              <span>Density</span>
-              <span className='text-emerald-400 font-mono'>{config.count}</span>
+          <div className='space-y-5'>
+            <div>
+              <div className='text-slate-500 dark:text-slate-400 mb-2 flex justify-between text-xs'>
+                <span>Density</span>
+                <span className='text-emerald-600 dark:text-emerald-400 font-mono'>
+                  {config.count}
+                </span>
+              </div>
+              <input
+                type='range'
+                min='20'
+                max='300'
+                value={config.count}
+                onChange={(e) =>
+                  setConfig({ ...config, count: Number(e.target.value) })
+                }
+                className='accent-emerald-500 bg-slate-200 dark:bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
+              />
             </div>
-            <input
-              type='range'
-              min='20'
-              max='300'
-              value={config.count}
-              onChange={(e) =>
-                setConfig({ ...config, count: Number(e.target.value) })
-              }
-              className='accent-emerald-500 bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
-            />
+
+            <div>
+              <div className='text-slate-500 dark:text-slate-400 mb-2 flex justify-between text-xs'>
+                <span>Link Range</span>
+                <span className='text-emerald-600 dark:text-emerald-400 font-mono'>
+                  {config.connectionDist}px
+                </span>
+              </div>
+              <input
+                type='range'
+                min='50'
+                max='250'
+                value={config.connectionDist}
+                onChange={(e) =>
+                  setConfig({
+                    ...config,
+                    connectionDist: Number(e.target.value),
+                  })
+                }
+                className='accent-emerald-500 bg-slate-200 dark:bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
+              />
+            </div>
+
+            <div>
+              <div className='text-slate-500 dark:text-slate-400 mb-2 flex justify-between text-xs'>
+                <span>Volatility</span>
+                <span className='text-emerald-600 dark:text-emerald-400 font-mono'>
+                  {config.speed.toFixed(1)}x
+                </span>
+              </div>
+              <input
+                type='range'
+                min='0.1'
+                max='4'
+                step='0.1'
+                value={config.speed}
+                onChange={(e) =>
+                  setConfig({ ...config, speed: Number(e.target.value) })
+                }
+                className='accent-emerald-500 bg-slate-200 dark:bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
+              />
+            </div>
+
+            <div>
+              <div className='text-slate-500 dark:text-slate-400 mb-2 flex justify-between text-xs'>
+                <span>Friction</span>
+                <span className='text-emerald-600 dark:text-emerald-400 font-mono'>
+                  {config.friction.toFixed(2)}
+                </span>
+              </div>
+              <input
+                type='range'
+                min='0.01'
+                max='0.30'
+                step='0.01'
+                value={config.friction}
+                onChange={(e) =>
+                  setConfig({ ...config, friction: Number(e.target.value) })
+                }
+                className='accent-emerald-500 bg-slate-200 dark:bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
+              />
+            </div>
           </div>
 
-          <div className='mb-5'>
-            <div className='text-slate-400 mb-2 flex justify-between text-xs'>
-              <span>Link Range</span>
-              <span className='text-emerald-400 font-mono'>
-                {config.connectionDist}px
-              </span>
+          <div className='mt-6'>
+            <div className='text-slate-500 dark:text-slate-400 mb-2 text-xs'>
+              Theme
             </div>
-            <input
-              type='range'
-              min='50'
-              max='250'
-              value={config.connectionDist}
-              onChange={(e) =>
-                setConfig({
-                  ...config,
-                  connectionDist: Number(e.target.value),
-                })
-              }
-              className='accent-emerald-500 bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
-            />
-          </div>
-
-          <div className='mb-5'>
-            <div className='text-slate-400 mb-2 flex justify-between text-xs'>
-              <span>Volatility</span>
-              <span className='text-emerald-400 font-mono'>
-                {config.speed.toFixed(1)}x
-              </span>
-            </div>
-            <input
-              type='range'
-              min='0.1'
-              max='4'
-              step='0.1'
-              value={config.speed}
-              onChange={(e) =>
-                setConfig({ ...config, speed: Number(e.target.value) })
-              }
-              className='accent-emerald-500 bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
-            />
-          </div>
-
-          <div className='mb-5'>
-            <div className='text-slate-400 mb-2 flex justify-between text-xs'>
-              <span>Friction</span>
-              <span className='text-emerald-400 font-mono'>
-                {config.friction.toFixed(2)}
-              </span>
-            </div>
-            <input
-              type='range'
-              min='0.01'
-              max='0.30'
-              step='0.01'
-              value={config.friction}
-              onChange={(e) =>
-                setConfig({ ...config, friction: Number(e.target.value) })
-              }
-              className='accent-emerald-500 bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
-            />
-          </div>
-
-          <div>
-            <div className='text-slate-400 mb-2 text-xs'>Theme</div>
             <div className='flex gap-3'>
-              {['#64ffda', '#f43f5e', '#3b82f6', '#a855f7'].map((c) => (
+              {['#64ffda', '#f43f5e', '#3b82f6', '#0f172a'].map((c) => (
                 <button
                   key={c}
                   onClick={() => setConfig({ ...config, color: c })}
-                  className={`h-6 w-6 rounded-full border border-slate-600 transition-transform hover:scale-110 ${
+                  className={`h-6 w-6 rounded-full border border-slate-300 dark:border-slate-600 transition-transform hover:scale-110 ${
                     config.color === c
-                      ? 'ring-2 ring-white ring-offset-2 ring-offset-slate-900'
+                      ? 'ring-2 ring-emerald-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-900'
                       : ''
                   }`}
                   style={{ backgroundColor: c }}
+                  title={c}
                 />
               ))}
             </div>
