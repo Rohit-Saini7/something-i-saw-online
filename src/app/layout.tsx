@@ -7,7 +7,11 @@ import { Analytics } from '@vercel/analytics/react';
 import { cn } from '@/lib/utils';
 import { Toaster } from '@ui-components/sonner';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'Portfolio + Lab',
@@ -16,16 +20,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang='en' suppressHydrationWarning>
+    <html lang='en' suppressHydrationWarning className='bg-background'>
       <body
-        className={cn(
-          'bg-background min-h-screen font-sans antialiased',
-          inter.variable
-        )}
+        className={cn('min-h-screen font-sans antialiased', inter.variable)}
       >
         <ThemeProvider
           attribute='class'
@@ -35,8 +36,8 @@ export default function RootLayout({
         >
           {children}
           <CommandMenu />
-          <Analytics />
           <Toaster position='bottom-center' richColors />
+          <Analytics />
         </ThemeProvider>
       </body>
     </html>

@@ -4,10 +4,9 @@ import LabNavbar from '@lab-components/lab-navbar';
 
 export default function LabLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className='bg-background min-h-screen w-full relative'>
+    <div className='relative min-h-screen w-full'>
       <LabNavbar />
-
-      <main className='relative h-full w-full'>{children}</main>
+      {children}
     </div>
   );
 }

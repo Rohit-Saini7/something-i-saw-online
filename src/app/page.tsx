@@ -1,14 +1,32 @@
 import Link from 'next/link';
 import {
   ArrowUpRightIcon,
+  BriefcaseBusinessIcon,
+  ExternalLinkIcon,
   FlaskConicalIcon,
-  GithubIcon,
-  LinkedinIcon,
+  FolderIcon,
   TerminalIcon,
 } from 'lucide-react';
-import { projects } from '@/data/projects';
+import { projects, ProjectType } from '@/data/projects';
 import { experience } from '@/data/experience';
 import { OsShortcut } from '@components/command-menu';
+import { JSX } from 'react';
+import Image from 'next/image';
+import { Badge } from '@ui-components/badge';
+
+const TYPE_ICONS = {
+  experiment: FlaskConicalIcon,
+  work: BriefcaseBusinessIcon,
+  external: FolderIcon,
+  default: TerminalIcon,
+};
+
+const TYPE_BADGES: Partial<Record<ProjectType, JSX.Element>> = {
+  experiment: <Badge variant='secondary'>Experiment</Badge>,
+  external: (
+    <ExternalLinkIcon className='w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors' />
+  ),
+};
 
 export default function Home() {
   const featuredProjects = projects.filter((p) => p.featured);
@@ -17,7 +35,7 @@ export default function Home() {
     <main className='mx-auto min-h-screen max-w-3xl space-y-24 px-6 py-12 md:py-20'>
       <section className='space-y-6'>
         <div className='space-y-2'>
-          <h1 className='text-foreground text-4xl font-bold tracking-tight sm:text-5xl'>
+          <h1 className='text-4xl font-bold tracking-tight sm:text-5xl'>
             Rohit Saini
           </h1>
           <p className='text-muted-foreground text-xl font-medium'>
@@ -32,27 +50,55 @@ export default function Home() {
         </p>
 
         <div className='flex items-center gap-4 pt-2'>
-          <a
+          <Link
             href='https://github.com/Rohit-Saini7'
             target='_blank'
             rel='noopener noreferrer'
-            className='text-muted-foreground hover:text-foreground transition-colors'
           >
-            <GithubIcon className='h-6 w-6' />
+            <Image
+              src='/Icons/github-mark.svg'
+              height={24}
+              width={24}
+              alt='github'
+              className='dark:hidden opacity-90 hover:opacity-100 transition-opacity'
+            />
+            <Image
+              src='/Icons/github-mark-white.svg'
+              height={24}
+              width={24}
+              alt='github'
+              className='hidden dark:block opacity-70 hover:opacity-100 transition-opacity'
+            />
             <span className='sr-only'>GitHub</span>
-          </a>
-          <a
+          </Link>
+          <Link
             href='https://linkedin.com/in/rohit-saini7'
             target='_blank'
             rel='noopener noreferrer'
-            className='text-muted-foreground hover:text-foreground transition-colors'
           >
-            <LinkedinIcon className='h-6 w-6' />
+            <Image
+              src='/Icons/InBug-Black.png'
+              height={22.5}
+              width={24}
+              className='dark:hidden opacity-70 hover:opacity-100 transition-opacity'
+              alt='linkedin'
+            />
+            <Image
+              src='/Icons/InBug-White.png'
+              height={22.5}
+              width={24}
+              className='hidden dark:block opacity-70 hover:opacity-100 transition-opacity'
+              alt='linkedin'
+            />
             <span className='sr-only'>LinkedIn</span>
-          </a>
-          <div className='bg-border h-4 w-px' />
+          </Link>
+          <div className='h-4 w-px bg-border' />
           <p className='text-muted-foreground text-sm'>
             <OsShortcut /> to navigate
+            <span className='hidden sm:inline'>
+              , change theme or download resume
+            </span>
+            .
           </p>
         </div>
       </section>
@@ -64,74 +110,71 @@ export default function Home() {
           </h2>
           <Link
             href='/lab'
-            className='text-muted-foreground hover:text-primary flex items-center gap-1 text-sm'
+            className='flex items-center gap-1 text-sm text-muted-foreground hover:text-primary transition-colors'
           >
             View Lab <ArrowUpRightIcon className='h-3 w-3' />
           </Link>
         </div>
 
         <div className='grid gap-6 md:grid-cols-2'>
-          {featuredProjects.map((project) => (
-            <div
-              key={project.id}
-              className='group border-border bg-card hover:border-primary/50 rounded-lg border p-5 transition-all hover:shadow-md'
-            >
-              <div className='mb-4 flex items-start justify-between'>
-                <div className='bg-muted/50 group-hover:bg-primary/10 rounded-md p-2 transition-colors'>
-                  {project.type === 'lab' ? (
-                    <FlaskConicalIcon className='text-primary h-5 w-5' />
-                  ) : (
-                    <TerminalIcon className='text-primary h-5 w-5' />
-                  )}
+          {featuredProjects.map((project) => {
+            const Icon = TYPE_ICONS[project.type] || TYPE_ICONS.default;
+            const BadgeType = TYPE_BADGES[project.type] || null;
+
+            return (
+              <Link
+                href={project.liveUrl ?? project.repoUrl ?? '#'}
+                target={project.liveUrl ? '' : '_blank'}
+                key={project.id}
+                className='group rounded-lg border border-border bg-card p-5 transition-all hover:border-primary/50 hover:shadow-md'
+              >
+                <div className='mb-4 flex items-start justify-between'>
+                  <div className='rounded-md bg-muted/60 p-2 transition-colors group-hover:bg-primary/10'>
+                    <Icon className='h-5 w-5 text-primary' />
+                  </div>
+
+                  {BadgeType}
                 </div>
-                {project.type === 'lab' && (
-                  <span className='bg-secondary text-secondary-foreground rounded-full px-2 py-1 text-2xs font-bold tracking-wider uppercase'>
-                    Experiment
-                  </span>
-                )}
-              </div>
 
-              <h3 className='group-hover:text-primary mb-2 text-lg font-semibold transition-colors'>
-                {project.title}
-              </h3>
-              <p className='text-muted-foreground mb-4 line-clamp-3 text-sm'>
-                {project.description}
-              </p>
+                <h3 className='mb-2 text-lg font-semibold transition-colors'>
+                  {project.title}
+                </h3>
+                <p className='mb-4 line-clamp-3 text-sm text-muted-foreground'>
+                  {project.description}
+                </p>
 
-              <div className='mt-auto flex flex-wrap gap-2'>
-                {project.tech.map((t) => (
-                  <span
-                    key={t}
-                    className='text-muted-foreground bg-muted border-border/50 rounded border px-2 py-1 text-xs'
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ))}
+                <div className='mt-auto flex flex-wrap gap-2'>
+                  {project.tech.map((t) => (
+                    <Badge key={t} variant='secondary'>
+                      {t}
+                    </Badge>
+                  ))}
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
       <section className='space-y-8'>
         <h2 className='text-2xl font-semibold tracking-tight'>Experience</h2>
-        <div className='border-border ml-2 space-y-12 border-l'>
+        <div className='ml-2 space-y-12 border-l border-border'>
           {experience.map((role) => (
             <div key={role.id} className='relative pl-8'>
-              <span className='bg-primary ring-background absolute top-2 -left-[5px] h-2.5 w-2.5 rounded-full ring-4' />
+              <span className='absolute top-2 -left-[5px] h-2.5 w-2.5 rounded-full bg-primary ring-4 ring-background' />
 
               <div className='mb-2 flex flex-col sm:flex-row sm:items-baseline sm:justify-between'>
                 <h3 className='text-lg font-medium'>{role.role}</h3>
-                <span className='text-muted-foreground font-mono text-xs tabular-nums'>
+                <span className='font-mono text-xs tabular-nums text-muted-foreground'>
                   {role.period.start} — {role.period.end}
                 </span>
               </div>
 
-              <p className='text-foreground/80 mb-4 text-sm'>{role.company}</p>
+              <p className='mb-4 text-sm text-foreground/80'>{role.company}</p>
 
               <ul className='ml-4 list-outside list-disc space-y-1.5'>
                 {role.description.map((desc, i) => (
-                  <li key={i} className='text-muted-foreground pl-1 text-sm'>
+                  <li key={i} className='pl-1 text-sm text-muted-foreground'>
                     {desc}
                   </li>
                 ))}
@@ -141,7 +184,7 @@ export default function Home() {
                 {role.tech.slice(0, 4).map((t) => (
                   <span
                     key={t}
-                    className='text-muted-foreground/60 border-border/40 rounded border px-1.5 py-0.5 text-2xs'
+                    className='rounded border border-border/40 px-1.5 py-0.5 text-2xs text-muted-foreground/60'
                   >
                     {t}
                   </span>

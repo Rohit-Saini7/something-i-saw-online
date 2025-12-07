@@ -72,14 +72,13 @@ export default function CommandMenu() {
 
   return (
     <>
-      <div className='fixed bottom-4 right-4 z-50 md:hidden'>
-        <button
-          onClick={() => setOpen(true)}
-          className='bg-primary text-primary-foreground h-10 w-10 rounded-full flex items-center justify-center shadow-lg'
-        >
-          <CodeIcon className='h-5 w-5' />
-        </button>
-      </div>
+      <Button
+        size='icon'
+        onClick={() => setOpen(true)}
+        className='fixed bottom-4 right-4 z-50 md:hidden rounded-full'
+      >
+        <CodeIcon className='h-5 w-5' />
+      </Button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput
@@ -95,10 +94,12 @@ export default function CommandMenu() {
               <HomeIcon className='mr-2 h-4 w-4' />
               <span>Home</span>
             </CommandItem>
+
             <CommandItem onSelect={() => runCommand(() => router.push('/lab'))}>
               <FlaskConicalIcon className='mr-2 h-4 w-4' />
               <span>The Lab</span>
             </CommandItem>
+
             <CommandItem
               onSelect={() =>
                 runCommand(() => window.open('/resume.pdf', '_blank'))
@@ -115,6 +116,7 @@ export default function CommandMenu() {
             <CommandItem onSelect={runThemeCommand}>
               <LaptopIcon className='mr-2 h-4 w-4' />
               <span>Switch Theme</span>
+
               <div className='ml-auto flex items-center gap-2 text-xs text-muted-foreground'>
                 <span
                   role='button'
@@ -124,13 +126,15 @@ export default function CommandMenu() {
                     setOpen(false);
                   }}
                   className={cn(
-                    'hover:text-foreground cursor-pointer transition-colors',
-                    theme === 'light' && 'text-foreground font-bold'
+                    'cursor-pointer transition-colors hover:text-foreground',
+                    theme === 'light' && 'font-bold text-foreground'
                   )}
                 >
                   Light
                 </span>
+
                 <span>/</span>
+
                 <span
                   role='button'
                   onClick={(e) => {
@@ -139,13 +143,15 @@ export default function CommandMenu() {
                     setOpen(false);
                   }}
                   className={cn(
-                    'hover:text-foreground cursor-pointer transition-colors',
-                    theme === 'dark' && 'text-foreground font-bold'
+                    'cursor-pointer transition-colors hover:text-foreground',
+                    theme === 'dark' && 'font-bold text-foreground'
                   )}
                 >
                   Dark
                 </span>
+
                 <span>/</span>
+
                 <span
                   role='button'
                   onClick={(e) => {
@@ -154,8 +160,8 @@ export default function CommandMenu() {
                     setOpen(false);
                   }}
                   className={cn(
-                    'hover:text-foreground cursor-pointer transition-colors',
-                    theme === 'system' && 'text-foreground font-bold'
+                    'cursor-pointer transition-colors hover:text-foreground',
+                    theme === 'system' && 'font-bold text-foreground'
                   )}
                 >
                   System
@@ -177,6 +183,7 @@ export default function CommandMenu() {
               <CodeIcon className='mr-2 h-4 w-4' />
               <span>GitHub</span>
             </CommandItem>
+
             <CommandItem
               onSelect={() =>
                 runCommand(() =>
@@ -196,19 +203,22 @@ export default function CommandMenu() {
 
 import { Kbd, KbdGroup } from '@ui-components/kbd';
 import useOs from '@/hooks/useOs';
+import { Button } from '@ui-components/button';
 
 export function OsShortcut() {
   const os = useOs();
 
   return (
     <>
-      <KbdGroup className='hidden sm:inline-flex gap-1'>
+      <KbdGroup className='hidden gap-1 sm:inline-flex'>
         {os === 'mac' ? <Kbd className='text-base'>⌘</Kbd> : <Kbd>Ctrl</Kbd>}
         <Kbd>K</Kbd>
       </KbdGroup>
-      <KbdGroup className='sm:hidden text-base'>
-        <Kbd className='text-base'>&lt;</Kbd>
-        <Kbd className='text-base'>&gt;</Kbd>
+
+      <KbdGroup className='text-base sm:hidden'>
+        <Kbd className='text-base'>
+          <CodeIcon className='h-5 w-5' />
+        </Kbd>
       </KbdGroup>
     </>
   );

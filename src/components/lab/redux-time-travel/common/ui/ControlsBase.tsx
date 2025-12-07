@@ -29,6 +29,9 @@ import {
 import { Button } from '@ui-components/button';
 import { useClipboard } from '@/hooks/useClipboard';
 import { Kbd, KbdGroup } from '@ui-components/kbd';
+import { cn } from '@/lib/utils';
+import { Slider } from '@ui-components/slider';
+import { Textarea } from '@ui-components/textarea';
 
 export default function ControlsBase({
   history,
@@ -136,17 +139,17 @@ export default function ControlsBase({
   };
 
   return (
-    <div className='absolute bottom-8 left-1/2 -translate-x-1/2 w-full max-w-lg px-6'>
-      <div className='bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800 backdrop-blur-md rounded-xl p-4 shadow-xl dark:shadow-2xl transition-colors duration-300'>
-        <div className='flex justify-between items-center mb-4'>
-          <div className='flex items-center gap-2 text-slate-500 dark:text-slate-400'>
-            <HistoryIcon className='w-4 h-4 text-emerald-600 dark:text-emerald-500' />
-            <span className='text-base font-mono font-bold uppercase hidden sm:inline'>
+    <div className='absolute bottom-8 left-1/2 w-full max-w-lg -translate-x-1/2 px-6'>
+      <div className='rounded-xl border border-border bg-background/90 p-4 shadow-xl backdrop-blur-md'>
+        <div className='mb-4 flex items-center justify-between'>
+          <div className='flex items-center gap-2 text-muted-foreground'>
+            <HistoryIcon className='size-4 text-primary' />
+            <span className='hidden font-mono text-base font-bold uppercase sm:inline'>
               Time Machine
             </span>
           </div>
 
-          <div className='flex gap-2 items-center'>
+          <div className='flex items-center gap-2'>
             {Object.entries(PRESETS).map(([name, pattern]) => (
               <button
                 key={name}
@@ -154,34 +157,33 @@ export default function ControlsBase({
                   onPreset(pattern);
                   setIsPlaying(false);
                 }}
-                className='text-2xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-1 rounded hover:bg-emerald-500/10 dark:hover:bg-emerald-500/20 hover:text-emerald-600 dark:hover:text-emerald-400 uppercase font-mono tracking-wide transition-colors'
+                className='rounded bg-muted px-2 py-1 font-mono text-2xs uppercase tracking-wide text-muted-foreground transition hover:bg-accent hover:text-accent-foreground'
               >
                 {name}
               </button>
             ))}
 
-            <div className='w-px h-4 bg-slate-200 dark:bg-slate-800 mx-1' />
+            <div className='mx-1 h-4 w-px bg-border' />
+
             <Dialog>
               <DialogTrigger asChild className='hidden md:block'>
-                <button className='text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors'>
-                  <KeyboardIcon className='w-4 h-4' />
+                <button className='text-muted-foreground transition hover:text-foreground'>
+                  <KeyboardIcon className='size-4' />
                 </button>
               </DialogTrigger>
-              <DialogContent className='sm:max-w-[425px]'>
-                <DialogHeader className='text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest'>
+
+              <DialogContent>
+                <DialogHeader>
                   <DialogTitle>Keyboard</DialogTitle>
                 </DialogHeader>
-                <div className='space-y-2 text-xs font-mono grid grid-cols-2 odd:text-left even:text-right even:text-emerald-600 even:dark:text-emerald-400'>
-                  <Kbd>Space</Kbd>
-                  <span>Play / Pause</span>
+                <div className='grid grid-cols-2 gap-2 text-xs font-mono even:text-right'>
+                  <Kbd>Space</Kbd> <span>Play / Pause</span>
                   <KbdGroup>
-                    <Kbd>←</Kbd> /<Kbd>→</Kbd>
+                    <Kbd>←</Kbd>/<Kbd>→</Kbd>
                   </KbdGroup>
                   <span>Time Travel</span>
-                  <Kbd>S</Kbd>
-                  <span>Next Gen (Step)</span>
-                  <Kbd>R</Kbd>
-                  <span>Reset</span>
+                  <Kbd>S</Kbd> <span>Next Gen (Step)</span>
+                  <Kbd>R</Kbd> <span>Reset</span>
                 </div>
               </DialogContent>
             </Dialog>
@@ -189,133 +191,111 @@ export default function ControlsBase({
             <button
               onClick={copyState}
               title='Export Grid State'
-              className='text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors'
+              className='text-muted-foreground transition hover:text-foreground'
             >
-              <Share2Icon className='w-4 h-4' />
+              <Share2Icon className='size-4' />
             </button>
 
             <Dialog open={isImporting} onOpenChange={setIsImporting}>
-              <form>
-                <DialogTrigger asChild>
-                  <button
-                    title='Import Grid State'
-                    className='pt-1 text-slate-400 dark:text-slate-500 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors'
-                  >
-                    <DownloadIcon className='w-4 h-4' />
-                  </button>
-                </DialogTrigger>
-                <DialogContent className='sm:max-w-[425px]'>
-                  <DialogHeader>
-                    <DialogTitle>Import Grid State</DialogTitle>
-                    <DialogDescription>
-                      Paste state array here...
-                    </DialogDescription>
-                  </DialogHeader>
-                  <textarea
-                    className='w-full text-base h-32 p-3 bg-background border border-slate-300 dark:border-slate-700 rounded-lg font-mono resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500'
-                    placeholder='[44, 45, 54]'
-                    value={importText}
-                    onChange={(e) => setImportText(e.target.value)}
-                    autoFocus
-                  />
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button
-                        variant='outline'
-                        onClick={() => setImportText('')}
-                      >
-                        Cancel
-                      </Button>
-                    </DialogClose>
-                    <Button
-                      className='bg-emerald-500 text-white'
-                      type='submit'
-                      onClick={handleImport}
-                    >
-                      Load State
+              <DialogTrigger asChild>
+                <button className='text-muted-foreground transition hover:text-foreground'>
+                  <DownloadIcon className='size-4' />
+                </button>
+              </DialogTrigger>
+
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Import Grid State</DialogTitle>
+                  <DialogDescription>
+                    Paste state array here...
+                  </DialogDescription>
+                </DialogHeader>
+
+                <Textarea
+                  className='h-52 md:h-32'
+                  placeholder='[44, 45, 54]'
+                  value={importText}
+                  onChange={(e) => setImportText(e.target.value)}
+                  autoFocus
+                />
+
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button variant='outline' onClick={() => setImportText('')}>
+                      Cancel
                     </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </form>
+                  </DialogClose>
+                  <Button type='submit' onClick={handleImport}>
+                    Load State
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
             </Dialog>
           </div>
         </div>
 
-        <div className='relative mb-5 group'>
-          <input
-            type='range'
+        <div className='mb-5'>
+          <Slider
             min={0}
             max={history.length - 1}
-            value={currentIndex}
-            onChange={(e) => {
-              onScrub(Number(e.target.value));
+            value={[currentIndex]}
+            onValueChange={([v]) => {
+              onScrub(v);
               setIsPlaying(false);
             }}
-            className='w-full h-2 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500'
           />
-          <div className='absolute top-3 left-0 right-0 h-2 flex justify-between pointer-events-none px-1'>
-            {history.map((_, i) => (
-              <div
-                key={i}
-                className={`w-px h-1 transition-colors ${
-                  i <= currentIndex
-                    ? 'bg-emerald-500/50'
-                    : 'bg-slate-300 dark:bg-slate-700'
-                }`}
-              />
-            ))}
-          </div>
         </div>
 
-        <div className='flex justify-between items-center'>
+        <div className='flex items-center justify-between'>
           <button
             onClick={() => {
               onReset();
               setIsPlaying(false);
             }}
-            className='p-2 rounded-md hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 text-slate-400 dark:text-slate-500 transition-colors'
+            className='rounded-md p-2 text-muted-foreground transition hover:bg-destructive/15 hover:text-destructive'
           >
-            <Trash2Icon className='w-4 h-4' />
+            <Trash2Icon className='size-4' />
           </button>
 
-          <div className='flex items-center gap-3 bg-slate-100 dark:bg-slate-800/50 p-1 rounded-lg transition-colors'>
+          <div className='flex items-center gap-3 rounded-lg bg-muted p-1'>
             <button
               onClick={stepBack}
               disabled={currentIndex === 0}
-              className='p-2 hover:text-slate-900 dark:hover:text-white text-slate-400 disabled:opacity-30 transition-colors'
+              className='p-2 text-muted-foreground transition hover:text-foreground disabled:opacity-30'
             >
-              <ChevronLeftIcon className='w-4 h-4' />
+              <ChevronLeftIcon className='size-4' />
             </button>
 
             <button
               onClick={togglePlay}
-              className={`p-2 px-6 rounded-md flex items-center gap-2 text-base font-bold transition-all ${
+              className={cn(
+                'flex items-center gap-2 rounded-md px-6 py-2 text-sm font-bold transition',
                 isPlaying
-                  ? 'bg-emerald-500 text-white dark:text-slate-950 shadow-md dark:shadow-[0_0_15px_rgba(16,185,129,0.4)]'
-                  : 'bg-white/99 dark:bg-slate-700 text-slate-700 dark:text-white hover:bg-slate-50 dark:hover:bg-slate-600 shadow-sm dark:shadow-none'
-              }`}
+                  ? 'bg-primary text-primary-foreground shadow'
+                  : 'bg-card text-card-foreground hover:bg-accent'
+              )}
             >
               {isPlaying ? (
-                <PauseIcon className='w-3 h-3' />
+                <PauseIcon className='size-3' />
               ) : (
-                <PlayIcon className='w-3 h-3' />
+                <PlayIcon className='size-3' />
               )}
             </button>
 
             <button
               onClick={stepForward}
               disabled={currentIndex === history.length - 1}
-              className='p-2 hover:text-slate-900 dark:hover:text-white text-slate-400 disabled:opacity-30 transition-colors'
+              className='p-2 text-muted-foreground transition hover:text-foreground disabled:opacity-30'
             >
-              <ChevronRightIcon className='w-4 h-4' />
+              <ChevronRightIcon className='size-4' />
             </button>
           </div>
 
           <button
             onClick={onStep}
-            className='p-2 rounded-md hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400 text-slate-400 dark:text-slate-500 transition-colors'
+            className='rounded-md p-2 text-muted-foreground transition hover:bg-accent hover:text-accent-foreground'
           >
-            <CpuIcon className='w-4 h-4' />
+            <CpuIcon className='size-4' />
           </button>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react';
 import { ClockIcon, ServerIcon, ZapIcon, DatabaseIcon } from 'lucide-react';
 import { useLogs } from './LogContext';
+import { cn } from '@/lib/utils';
 
 interface MetricProps {
   label: string;
@@ -52,56 +53,68 @@ export default function TimeMetric({
     }
   }, [time]);
 
-  const styles = {
-    CSR: 'border-blue-500 text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/5',
-    SSR: 'border-emerald-500 text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/5',
-    SSG: 'border-amber-500 text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-500/5',
-    ISR: 'border-purple-500 text-purple-700 dark:text-purple-400 bg-purple-50 dark:bg-purple-500/5',
+  const styleMap = {
+    CSR: 'border-info text-info bg-info/5',
+    SSR: 'border-primary text-primary bg-primary/5',
+    SSG: 'border-warning text-warning bg-warning/5',
+    ISR: 'border-revalidate text-revalidate bg-revalidate/5',
   };
 
   const icons = {
-    CSR: <ZapIcon className='w-4 h-4' />,
-    SSR: <ServerIcon className='w-4 h-4' />,
-    SSG: <DatabaseIcon className='w-4 h-4' />,
-    ISR: <ClockIcon className='w-4 h-4' />,
+    CSR: <ZapIcon className='size-4' />,
+    SSR: <ServerIcon className='size-4' />,
+    SSG: <DatabaseIcon className='size-4' />,
+    ISR: <ClockIcon className='size-4' />,
   };
 
   return (
     <div
-      className={`relative flex flex-col justify-between h-full border-t-2 rounded-xl p-6 transition-all duration-500 ${styles[type]} bg-white/80 dark:bg-gray-900/40 backdrop-blur-sm shadow-sm hover:shadow-md dark:hover:bg-gray-900/60`}
+      className={cn(
+        'relative flex h-full flex-col justify-between rounded-xl border-t-2 p-6 backdrop-blur-sm transition-all duration-500 shadow-sm hover:shadow-md bg-background/80',
+        styleMap[type]
+      )}
     >
       <div
-        className={`absolute inset-0 bg-black/5 dark:bg-white/5 pointer-events-none transition-opacity duration-300 ${flash ? 'opacity-100' : 'opacity-0'}`}
+        className={cn(
+          'pointer-events-none absolute inset-0 bg-foreground/5 transition-opacity duration-300',
+          flash ? 'opacity-100' : 'opacity-0'
+        )}
       />
 
-      <div className='flex justify-between items-start mb-6'>
-        <div className='flex items-center gap-2 font-bold tracking-widest text-xs uppercase opacity-80'>
+      <div className='mb-6 flex items-start justify-between'>
+        <div className='flex items-center gap-2 text-xs font-bold uppercase tracking-widest opacity-80'>
           {icons[type]}
           {label}
         </div>
-        <div className='flex items-center gap-1.5 text-[9px] font-mono text-gray-500 dark:text-gray-500 uppercase'>
+
+        <div className='flex items-center gap-1.5 text-[9px] font-mono uppercase text-muted-foreground'>
           <span
-            className={`w-1.5 h-1.5 rounded-full transition-colors duration-1000 ${isHydrated ? 'bg-emerald-500 dark:bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.4)] dark:shadow-[0_0_8px_rgba(52,211,153,0.6)]' : 'bg-gray-400 dark:bg-gray-700'}`}
+            className={cn(
+              'h-1.5 w-1.5 rounded-full transition-colors duration-1000',
+              isHydrated
+                ? 'bg-success shadow-[0_0_8px_hsl(var(--success)/0.5)]'
+                : 'bg-muted-foreground'
+            )}
           />
           {isHydrated ? 'Hydrated' : 'Initializing'}
         </div>
       </div>
 
       <div className='space-y-1'>
-        <div className='font-mono text-2xl md:text-3xl font-light tracking-tighter tabular-nums text-gray-900 dark:text-gray-100'>
+        <div className='font-mono text-2xl font-light tracking-tighter tabular-nums text-foreground md:text-3xl'>
           {time || (
-            <span className='animate-pulse text-gray-400 dark:text-gray-700'>
+            <span className='animate-pulse text-muted-foreground'>
               --:--:--
             </span>
           )}
         </div>
-        <p className='text-xs text-gray-500 dark:text-gray-500 font-mono'>
+        <p className='font-mono text-xs text-muted-foreground'>
           {time ? `Timestamp: ${time.split(' ')[0]}` : 'Waiting for client...'}
         </p>
       </div>
 
-      <div className='mt-6 pt-4 border-t border-gray-200 dark:border-white/5'>
-        <p className='text-xs text-gray-600 dark:text-gray-400 leading-relaxed'>
+      <div className='mt-6 border-t pt-4'>
+        <p className='text-xs leading-relaxed text-muted-foreground'>
           {description}
         </p>
       </div>

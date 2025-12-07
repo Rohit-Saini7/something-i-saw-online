@@ -16,15 +16,17 @@ import {
   LockIcon,
   UnlockIcon,
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Slider } from '@ui-components/slider';
 
 const CHAR_SETS = {
-  chaos: '!<>-_\\/[]{}—=+*^?#________',
-  binary: '01010110100010101011101',
-  matrix: 'ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ',
-  simple: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+  Chaos: '!<>-_\\/[]{}—=+*^?#________',
+  Binary: '01010110100010101011101',
+  Matrix: 'ｦｧｨｩｪｫｬｭｮｯｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ',
+  Simple: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
 };
 
-type CharSetType = 'chaos' | 'binary' | 'matrix' | 'simple';
+type CharSetType = keyof typeof CHAR_SETS;
 type RevealMode = 'start' | 'end' | 'random';
 
 type ScrambleConfig = {
@@ -51,7 +53,7 @@ export default function ScrambleLab() {
   const [config, setConfig] = useState<ScrambleConfig>({
     text: 'SYSTEM_BREACH',
     speed: 0.4,
-    charSet: 'chaos',
+    charSet: 'Chaos',
     revealMode: 'random',
     glow: true,
     crt: true,
@@ -81,12 +83,7 @@ export default function ScrambleLab() {
     );
 
     setEncryptedText(newEncrypted);
-
-    if (isDecrypted) {
-      setDisplayText(config.text);
-    } else {
-      setDisplayText(newEncrypted);
-    }
+    setDisplayText(isDecrypted ? config.text : newEncrypted);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config.text, config.charSet, generateRandomString]);
 
@@ -110,17 +107,16 @@ export default function ScrambleLab() {
 
     intervalRef.current = setInterval(() => {
       const charsRevealed = Math.floor(step);
-      const solvedIndices = new Set(indices.slice(0, charsRevealed));
+      const solved = new Set(indices.slice(0, charsRevealed));
 
       setDisplayText(() =>
         targetText
           .split('')
-          .map((letter, index) => {
-            if (solvedIndices.has(index)) {
-              return letter;
-            }
-            return chars[Math.floor(Math.random() * chars.length)];
-          })
+          .map((letter, index) =>
+            solved.has(index)
+              ? letter
+              : chars[Math.floor(Math.random() * chars.length)]
+          )
           .join('')
       );
 
@@ -133,89 +129,82 @@ export default function ScrambleLab() {
     }, 30);
   };
 
-  const handleInteractionStart = () => {
+  const handleStart = () => {
     setIsDecrypted(true);
     triggerScramble(config.text);
   };
 
-  const handleInteractionEnd = () => {
+  const handleEnd = () => {
     setIsDecrypted(false);
     triggerScramble(encryptedText);
   };
 
   const handleMouseEnter = () => {
     if (window.matchMedia('(hover: hover)').matches) {
-      handleInteractionStart();
+      handleStart();
     }
   };
 
   const handleMouseLeave = () => {
     if (window.matchMedia('(hover: hover)').matches) {
-      handleInteractionEnd();
+      handleEnd();
     }
   };
 
   const handleClick = () => {
-    if (isDecrypted) handleInteractionEnd();
-    else handleInteractionStart();
+    if (isDecrypted) handleEnd();
+    else handleStart();
   };
 
   return (
-    <div className='relative h-screen w-screen bg-background flex flex-col items-center justify-center overflow-hidden font-mono transition-colors'>
+    <div className='relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden font-mono'>
       {config.crt && <CRTOverlay />}
 
-      <div className='relative z-10 p-8 text-center w-full'>
-        <div className='mb-6 flex justify-center'>
-          <div
-            className={`flex items-center gap-2 px-3 py-1 rounded-full text-xs font-bold tracking-widest border transition-all duration-500 ${
-              isDecrypted
-                ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
-                : 'border-slate-300 bg-slate-200/50 text-slate-500 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-500'
-            }`}
-          >
-            {isDecrypted ? (
-              <UnlockIcon className='w-3 h-3' />
-            ) : (
-              <LockIcon className='w-3 h-3' />
-            )}
-            {isDecrypted ? 'DECRYPTED' : 'ENCRYPTED'}
-          </div>
-        </div>
-
-        <button
-          type='button'
-          onClick={handleClick}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-          className='text-4xl md:text-7xl lg:text-8xl font-black tracking-tighter cursor-pointer select-none transition-all duration-300 wrap-break-word w-full focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-lg'
-          style={{
-            color: isDecrypted ? config.color : undefined,
-            textShadow:
-              config.glow && isDecrypted
-                ? `0 0 20px ${config.color}, 0 0 40px ${config.color}80`
-                : 'none',
-            filter: config.crt ? 'blur(0.5px)' : 'none',
-          }}
+      <div className='relative z-10 mb-6'>
+        <div
+          className={cn(
+            'flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-bold tracking-widest transition-colors',
+            isDecrypted
+              ? 'border-primary bg-primary/10 text-primary'
+              : 'border-border bg-muted text-muted-foreground'
+          )}
         >
-          {displayText}
-        </button>
-
-        <div className='mt-8 flex justify-center gap-2 opacity-50 text-sm tracking-[0.2em]'>
-          <span>{isDecrypted ? 'LEAVE' : 'HOVER'}</span>
-          <span>/</span>
-          <span>CLICK TO {isDecrypted ? 'ENCRYPT' : 'DECRYPT'}</span>
+          {isDecrypted ? (
+            <UnlockIcon className='size-3' />
+          ) : (
+            <LockIcon className='size-3' />
+          )}
+          {isDecrypted ? 'DECRYPTED' : 'ENCRYPTED'}
         </div>
       </div>
 
-      <div className='absolute inset-0 bg-[linear-gradient(rgba(16,185,129,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.03)_1px,transparent_1px)] bg-size-[100px_100px] pointer-events-none' />
+      <button
+        type='button'
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        className='rounded-lg text-4xl font-black tracking-tighter transition focus-visible:ring-1 focus-visible:ring-ring/50 md:text-7xl lg:text-8xl'
+        style={{
+          color: isDecrypted ? config.color : undefined,
+          textShadow:
+            config.glow && isDecrypted
+              ? `0 0 20px ${config.color}, 0 0 40px ${config.color}80`
+              : 'none',
+          filter: config.crt ? 'blur(0.5px)' : 'none',
+        }}
+      >
+        {displayText}
+      </button>
+
+      <div className='mt-8 flex text-sm tracking-widest text-muted-foreground justify-center gap-2'>
+        <span>{isDecrypted ? 'LEAVE' : 'HOVER'}</span>
+        <span>/</span>
+        <span>CLICK TO {isDecrypted ? 'ENCRYPT' : 'DECRYPT'}</span>
+      </div>
 
       <button
-        onClick={() => setIsControlsOpen(!isControlsOpen)}
-        className={`fixed top-6 right-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 hover:bg-slate-200 dark:hover:bg-slate-800 ${
-          isControlsOpen
-            ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/50'
-            : 'bg-white/50 dark:bg-slate-900/50 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-700'
-        }`}
+        onClick={() => setIsControlsOpen((p) => !p)}
+        className='fixed right-6 top-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground shadow backdrop-blur-md transition hover:bg-accent hover:text-accent-foreground'
       >
         {isControlsOpen ? (
           <XIcon className='h-5 w-5' />
@@ -225,22 +214,23 @@ export default function ScrambleLab() {
       </button>
 
       <div
-        className={`fixed right-6 top-20 z-60 w-full max-w-xs transition-all duration-500 ease-out ${
+        className={cn(
+          'fixed right-6 top-20 z-60 w-full max-w-xs transition',
           isControlsOpen
             ? 'translate-x-0 opacity-100'
             : 'translate-x-[120%] opacity-0 pointer-events-none'
-        }`}
+        )}
       >
-        <div className='bg-white/95 dark:bg-slate-900/95 border-slate-200 dark:border-slate-800 w-full rounded-xl border p-5 shadow-2xl backdrop-blur-md'>
-          <div className='flex items-center justify-between mb-5'>
-            <h3 className='text-slate-500 text-xs font-bold uppercase tracking-widest'>
+        <div className='rounded-xl border border-border bg-card p-5 shadow-xl backdrop-blur-md'>
+          <div className='mb-5 flex items-center justify-between'>
+            <h3 className='text-xs font-bold tracking-widest text-muted-foreground uppercase'>
               Decryption Protocol
             </h3>
             <button
               onClick={() =>
                 triggerScramble(isDecrypted ? config.text : encryptedText)
               }
-              className='text-emerald-500 dark:text-emerald-400 hover:text-emerald-600 dark:hover:text-emerald-300 transition-colors'
+              className='text-muted-foreground hover:text-foreground transition'
               title='Re-run Sequence'
             >
               <RefreshCcwIcon className='h-4 w-4' />
@@ -248,8 +238,8 @@ export default function ScrambleLab() {
           </div>
 
           <div className='mb-5'>
-            <div className='text-slate-500 dark:text-slate-400 mb-2 flex justify-between text-xs'>
-              <span>Target Payload</span>
+            <div className='mb-2 text-xs text-muted-foreground'>
+              Target Payload
             </div>
             <div className='relative'>
               <input
@@ -259,33 +249,37 @@ export default function ScrambleLab() {
                   setConfig({ ...config, text: e.target.value.toUpperCase() })
                 }
                 maxLength={20}
-                className='w-full bg-slate-100 dark:bg-background border border-slate-200 dark:border-slate-800 rounded-lg py-2 pl-3 pr-10 text-sm text-slate-900 dark:text-slate-200 focus:outline-none focus:border-emerald-500/50 font-mono tracking-widest uppercase'
+                className='w-full rounded-lg border border-input bg-background py-2 pl-3 pr-10 text-sm text-foreground font-mono tracking-widest uppercase focus-visible:ring-1 focus-visible:ring-ring/50 outline-none'
               />
-              <TypeIcon className='absolute right-3 top-2.5 h-4 w-4 text-slate-400 dark:text-slate-600' />
+              <TypeIcon className='absolute right-3 top-2.5 h-4 w-4 text-muted-foreground' />
             </div>
           </div>
 
           <div className='mb-5'>
-            <div className='text-slate-500 dark:text-slate-400 mb-2 text-xs'>
+            <div className='mb-2 text-xs text-muted-foreground'>
               Encryption Cipher
             </div>
             <div className='grid grid-cols-4 gap-2'>
               {[
-                { id: 'chaos', icon: ZapIcon },
-                { id: 'binary', icon: BinaryIcon },
-                { id: 'matrix', icon: LanguagesIcon },
-                { id: 'simple', icon: TypeIcon },
+                { id: 'Chaos', icon: ZapIcon },
+                { id: 'Binary', icon: BinaryIcon },
+                { id: 'Matrix', icon: LanguagesIcon },
+                { id: 'Simple', icon: TypeIcon },
               ].map((item) => (
                 <button
                   key={item.id}
                   onClick={() =>
-                    setConfig({ ...config, charSet: item.id as CharSetType })
+                    setConfig({
+                      ...config,
+                      charSet: item.id as CharSetType,
+                    })
                   }
-                  className={`flex items-center justify-center h-9 rounded-md border transition-all ${
+                  className={cn(
+                    'flex h-9 items-center justify-center rounded-md border transition',
                     config.charSet === item.id
-                      ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400'
-                      : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-muted-foreground hover:text-foreground'
+                  )}
                   title={item.id.toUpperCase()}
                 >
                   <item.icon className='h-4 w-4' />
@@ -295,26 +289,30 @@ export default function ScrambleLab() {
           </div>
 
           <div className='mb-5'>
-            <div className='text-slate-500 dark:text-slate-400 mb-2 text-xs'>
+            <div className='mb-2 text-xs text-muted-foreground'>
               Reveal Logic
             </div>
             <div className='grid grid-cols-3 gap-2'>
               {[
-                { id: 'start', icon: ArrowRightIcon, label: 'Linear' },
-                { id: 'random', icon: ShuffleIcon, label: 'Random' },
-                { id: 'end', icon: ArrowLeftIcon, label: 'Reverse' },
+                { id: 'Linear', icon: ArrowRightIcon },
+                { id: 'Random', icon: ShuffleIcon },
+                { id: 'Reverse', icon: ArrowLeftIcon },
               ].map((item) => (
                 <button
                   key={item.id}
                   onClick={() =>
-                    setConfig({ ...config, revealMode: item.id as RevealMode })
+                    setConfig({
+                      ...config,
+                      revealMode: item.id as RevealMode,
+                    })
                   }
-                  className={`flex items-center justify-center h-9 rounded-md border transition-all ${
+                  className={cn(
+                    'flex h-9 items-center justify-center rounded-md border transition',
                     config.revealMode === item.id
-                      ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400'
-                      : 'bg-slate-100 dark:bg-slate-800 border-transparent text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700'
-                  }`}
-                  title={item.label}
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-muted text-muted-foreground hover:text-foreground'
+                  )}
+                  title={item.id}
                 >
                   <item.icon className='h-4 w-4' />
                 </button>
@@ -322,29 +320,22 @@ export default function ScrambleLab() {
             </div>
           </div>
 
-          <div className='mb-5'>
-            <div className='text-slate-500 dark:text-slate-400 mb-2 flex justify-between text-xs'>
+          <div className='mb-5 space-y-2'>
+            <div className='flex justify-between text-xs text-muted-foreground'>
               <span>Decryption Speed</span>
-              <span className='text-emerald-500 dark:text-emerald-400 font-mono'>
+              <span className='font-mono text-foreground'>
                 {(config.speed * 100).toFixed(0)}%
               </span>
             </div>
-            <input
-              type='range'
-              min='0.1'
-              max='1.5'
-              step='0.1'
-              value={config.speed}
-              onChange={(e) =>
-                setConfig({ ...config, speed: Number(e.target.value) })
-              }
-              className='accent-emerald-500 bg-slate-200 dark:bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
+            <Slider
+              min={0.1}
+              max={1.5}
+              step={0.1}
+              value={[config.speed]}
+              onValueChange={([v]) => setConfig((c) => ({ ...c, speed: v }))}
             />
           </div>
-
-          <div className='h-px bg-slate-200 dark:bg-slate-800 w-full mb-5' />
-
-          <div className='space-y-3'>
+          <div className='mb-5 space-y-3'>
             <div className='flex items-center justify-between'>
               <span className='text-xs text-slate-500 dark:text-slate-400'>
                 System Color
@@ -366,30 +357,32 @@ export default function ScrambleLab() {
                 )}
               </div>
             </div>
+          </div>
+          <div className='flex gap-2'>
+            <button
+              onClick={() => setConfig((c) => ({ ...c, glow: !c.glow }))}
+              className={cn(
+                'flex-1 rounded-md border py-1.5 text-xs transition font-bold',
+                config.glow
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground'
+              )}
+            >
+              GLOW {config.glow ? 'ON' : 'OFF'}
+            </button>
 
-            <div className='flex gap-2'>
-              <button
-                onClick={() => setConfig({ ...config, glow: !config.glow })}
-                className={`flex-1 text-xs py-1.5 rounded-md border transition-colors ${
-                  config.glow
-                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400'
-                    : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500'
-                }`}
-              >
-                GLOW {config.glow ? 'ON' : 'OFF'}
-              </button>
-              <button
-                onClick={() => setConfig({ ...config, crt: !config.crt })}
-                className={`flex-1 flex items-center justify-center gap-2 text-xs py-1.5 rounded-md border transition-colors ${
-                  config.crt
-                    ? 'bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400'
-                    : 'bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-500'
-                }`}
-              >
-                <MonitorIcon className='h-3 w-3' />
-                CRT {config.crt ? 'ON' : 'OFF'}
-              </button>
-            </div>
+            <button
+              onClick={() => setConfig((c) => ({ ...c, crt: !c.crt }))}
+              className={cn(
+                'flex flex-1 items-center justify-center gap-2 rounded-md border py-1.5 text-xs transition font-bold',
+                config.crt
+                  ? 'bg-primary text-primary-foreground'
+                  : 'bg-muted text-muted-foreground'
+              )}
+            >
+              <MonitorIcon className='size-3' />
+              CRT {config.crt ? 'ON' : 'OFF'}
+            </button>
           </div>
         </div>
       </div>

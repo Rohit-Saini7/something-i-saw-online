@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { projects } from '@/data/projects';
 import { ArrowRightIcon, FlaskConicalIcon } from 'lucide-react';
 import { OsShortcut } from '@components/command-menu';
+import { Badge } from '@ui-components/badge';
 
 export const metadata = {
   title: 'The Lab | Rohit Saini',
@@ -9,15 +10,15 @@ export const metadata = {
 };
 
 export default function LabGallery() {
-  const experiments = projects.filter((p) => p.type === 'lab');
+  const experiments = projects.filter((p) => p.type === 'experiment');
 
   return (
-    <main className='mx-auto min-h-screen max-w-3xl sm:max-w-7xl space-y-24 px-6 py-12 md:py-20'>
+    <main className='mx-auto min-h-screen max-w-3xl space-y-24 px-6 py-12 md:py-20 sm:max-w-7xl'>
       <section className='space-y-6'>
         <h1 className='text-4xl font-bold tracking-tighter md:text-6xl'>
           The Laboratory
         </h1>
-        <p className='text-muted-foreground max-w-xl text-lg'>
+        <p className='max-w-xl text-lg text-muted-foreground'>
           A collection of isolated web experiments, UI interactions, and physics
           simulations. Use <OsShortcut /> to switch contexts.
         </p>
@@ -28,44 +29,36 @@ export default function LabGallery() {
           <Link
             key={lab.id}
             href={`/lab/${lab.slug}`}
-            className='group bg-card border-border hover:border-primary/50 relative block h-64 overflow-hidden rounded-xl border shadow-sm transition-all duration-300 hover:shadow-md'
+            className='group relative block h-64 overflow-hidden rounded-xl border border-border bg-card shadow-sm transition-all duration-300 hover:border-primary/50 hover:shadow-md'
           >
-            <div className='from-primary/5 absolute inset-0 bg-linear-to-br to-transparent opacity-0 transition-opacity group-hover:opacity-100' />
+            <div className='absolute inset-0 bg-linear-to-br from-primary/5 to-transparent opacity-0 transition-opacity group-hover:opacity-100' />
 
-            <div className='absolute top-6 right-6 left-6'>
+            <div className='absolute inset-x-6 top-6'>
               <div className='flex items-start justify-between'>
-                <FlaskConicalIcon className='text-muted-foreground group-hover:text-primary h-6 w-6 transition-colors' />
-                <ArrowRightIcon className='text-muted-foreground group-hover:text-primary h-5 w-5 -rotate-45 transition-all duration-300 group-hover:rotate-0' />
+                <FlaskConicalIcon className='h-6 w-6 text-muted-foreground transition-colors group-hover:text-primary' />
+                <ArrowRightIcon className='h-5 w-5 -rotate-45 text-muted-foreground transition-all duration-300 group-hover:rotate-0 group-hover:text-primary' />
               </div>
             </div>
 
-            <div className='absolute right-6 bottom-6 left-6'>
-              <h2 className='text-foreground mb-2 text-xl font-semibold'>
+            <div className='absolute inset-x-6 bottom-6'>
+              <h2 className='mb-2 text-xl font-semibold text-foreground'>
                 {lab.title}
               </h2>
-              <p className='text-muted-foreground mb-4 line-clamp-2 text-sm'>
+
+              <p className='mb-4 line-clamp-2 text-sm text-muted-foreground'>
                 {lab.description}
               </p>
+
               <div className='flex flex-wrap gap-2'>
                 {lab.tech.slice(0, 3).map((t) => (
-                  <span
-                    key={t}
-                    className='text-muted-foreground border-border bg-muted/50 rounded border px-2 py-1 text-2xs tracking-wider uppercase'
-                  >
+                  <Badge variant='secondary' key={t}>
                     {t}
-                  </span>
+                  </Badge>
                 ))}
               </div>
             </div>
           </Link>
         ))}
-
-        {experiments.length === 0 && (
-          <div className='border-border text-muted-foreground col-span-full rounded-xl border border-dashed py-20 text-center'>
-            <FlaskConicalIcon className='mx-auto mb-4 h-12 w-12 opacity-20' />
-            <p>No experiments initialized yet.</p>
-          </div>
-        )}
       </section>
     </main>
   );

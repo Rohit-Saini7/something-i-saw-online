@@ -3,6 +3,7 @@
 import { GridCellProps } from '@lab-components/redux-time-travel/types';
 import { useDispatch } from 'react-redux';
 import { memo } from 'react';
+import { cn } from '@/lib/utils';
 
 function GridCellComponent({
   index,
@@ -28,14 +29,12 @@ function GridCellComponent({
       data-index={index}
       onMouseDown={handleDown}
       onMouseEnter={handleEnter}
-      className={`
-        aspect-square w-full rounded-sm border transition-all duration-150 cursor-crosshair border-slate-300 dark:border-slate-800
-        ${
-          active
-            ? 'bg-emerald-500 border-emerald-500 scale-95 shadow-sm dark:shadow-[0_0_10px_#10b981] dark:border-emerald-400'
-            : 'bg-slate-300 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800'
-        }
-      `}
+      className={cn(
+        'aspect-square w-full cursor-crosshair rounded-sm border transition-all duration-150 border-border',
+        active
+          ? 'bg-primary border-primary scale-95 shadow-sm'
+          : 'bg-muted hover:bg-accent'
+      )}
     />
   );
 }

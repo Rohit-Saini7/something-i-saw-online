@@ -9,6 +9,13 @@ import {
   SlidersHorizontalIcon,
   XIcon,
 } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Badge } from '@ui-components/badge';
+import { Slider } from '@ui-components/slider';
+import { Button } from '@ui-components/button';
+import { ButtonGroup } from '@ui-components/button-group';
+import { Switch } from '@ui-components/switch';
+import { Label } from '@ui-components/label';
 
 const mouse = { x: -1000, y: -1000 };
 
@@ -155,8 +162,13 @@ export default function ParticleLab() {
       canvas.height = rect.height * dpr;
       canvas.style.width = `${rect.width}px`;
       canvas.style.height = `${rect.height}px`;
-      ctx.scale(dpr, dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       initParticles();
+    };
+
+    const getBackgroundColor = () => {
+      const styles = getComputedStyle(container);
+      return styles.getPropertyValue('--background');
     };
 
     const animate = () => {
@@ -165,17 +177,19 @@ export default function ParticleLab() {
       const cfg = configRef.current;
 
       if (particles.length !== cfg.count) initParticles();
-      const isDark = resolvedTheme === 'dark';
 
+      const bg = getBackgroundColor();
+
+      const isDark = resolvedTheme === 'dark';
       if (cfg.showTrails) {
         ctx.fillStyle = isDark
-          ? 'rgba(2, 6, 23, 0.2)'
-          : 'rgba(255, 255, 255, 0.2)';
-        ctx.fillRect(0, 0, w, h);
+          ? 'rgba(0, 0, 0, 0.2)'
+          : 'rgba(255, 255, 255, 0.5)';
       } else {
-        ctx.fillStyle = isDark ? 'rgb(2, 6, 23)' : 'rgb(255, 255, 255)';
-        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = bg;
       }
+
+      ctx.fillRect(0, 0, w, h);
 
       particles.forEach((p, i) => {
         p.update(w, h);
@@ -189,13 +203,8 @@ export default function ParticleLab() {
 
           if (dist < cfg.connectionDist) {
             ctx.beginPath();
-            const strokeColor = cfg.color;
-            if (strokeColor.startsWith('#')) {
-              ctx.strokeStyle = strokeColor;
-              ctx.globalAlpha = 1 - dist / cfg.connectionDist;
-            } else {
-              ctx.strokeStyle = strokeColor;
-            }
+            ctx.strokeStyle = cfg.color;
+            ctx.globalAlpha = 1 - dist / cfg.connectionDist;
             ctx.lineWidth = 0.5;
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p2.x, p2.y);
@@ -223,7 +232,7 @@ export default function ParticleLab() {
       const rect = canvas.getBoundingClientRect();
       const clickX = e.clientX - rect.left;
       const clickY = e.clientY - rect.top;
-      particlesRef.current.forEach((p: Particle) => p.explode(clickX, clickY));
+      particlesRef.current.forEach((p) => p.explode(clickX, clickY));
     };
 
     window.addEventListener('resize', handleResize);
@@ -246,195 +255,147 @@ export default function ParticleLab() {
   return (
     <div
       ref={containerRef}
-      className='relative h-screen w-screen overflow-hidden bg-background transition-colors duration-300'
+      className='relative h-screen w-screen overflow-hidden bg-background'
     >
       <canvas
         ref={canvasRef}
         className='block h-full w-full cursor-crosshair'
       />
 
-      <button
+      <Button
         onClick={() => setIsControlsOpen(!isControlsOpen)}
-        className={`fixed top-6 right-6 z-40 flex h-10 w-10 items-center justify-center rounded-full border backdrop-blur-md transition-all duration-300 shadow-lg ${
-          isControlsOpen
-            ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/50'
-            : 'bg-background/80 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'
-        }`}
+        className='fixed top-6 right-6 z-40 rounded-full'
+        variant='outline'
+        size='icon-lg'
       >
         {isControlsOpen ? (
           <XIcon className='h-5 w-5' />
         ) : (
           <SlidersHorizontalIcon className='h-5 w-5' />
         )}
-      </button>
+      </Button>
 
       <div
-        className={`fixed right-6 top-20 z-40 w-full max-w-xs transition-all duration-500 ease-out ${
+        className={cn(
+          'fixed right-6 top-20 z-40 w-full max-w-xs transition',
           isControlsOpen
             ? 'translate-x-0 opacity-100'
             : 'translate-x-[120%] opacity-0 pointer-events-none'
-        }`}
+        )}
       >
-        <div className='w-full rounded-xl border p-5 shadow-2xl backdrop-blur-md bg-background/90 border-slate-200 dark:border-slate-800 transition-colors'>
-          <div className='flex items-center justify-between mb-5'>
-            <h3 className='text-slate-500 dark:text-slate-500 text-xs font-bold uppercase tracking-wide'>
+        <div className='rounded-xl border border-border bg-card p-5 shadow-xl backdrop-blur-md'>
+          <div className='mb-5 flex items-center justify-between'>
+            <h3 className='text-muted-foreground text-xs font-bold uppercase tracking-wide'>
               Exp Controls
             </h3>
-            <span className='flex items-center gap-1 text-2xs text-emerald-600 dark:text-emerald-400 font-mono bg-emerald-100 dark:bg-emerald-400/10 px-2 py-1 rounded-full'>
-              <ZapIcon className='w-3 h-3' /> CLICK TO SHOCK
-            </span>
+            <Badge variant='outline'>
+              <ZapIcon className='h-3 w-3' /> CLICK TO SHOCK
+            </Badge>
           </div>
 
-          <div className='mb-6 grid grid-cols-2 gap-2 bg-slate-100 dark:bg-black/20 p-1 rounded-lg border border-slate-200 dark:border-slate-800'>
-            <button
-              onClick={() => setConfig((prev) => ({ ...prev, mode: 'repel' }))}
-              className={`flex items-center justify-center gap-2 py-2 text-xs font-medium rounded-md transition-all ${
-                config.mode === 'repel'
-                  ? 'bg-white/99 dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-              }`}
-            >
-              <MousePointer2Icon className='w-3 h-3' /> Repel
-            </button>
-            <button
-              onClick={() =>
-                setConfig((prev) => ({ ...prev, mode: 'attract' }))
-              }
-              className={`flex items-center justify-center gap-2 py-2 text-xs font-medium rounded-md transition-all ${
-                config.mode === 'attract'
-                  ? 'bg-white/99 dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
-                  : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300'
-              }`}
-            >
-              <MagnetIcon className='w-3 h-3' /> Attract
-            </button>
-          </div>
+          <ButtonGroup className='mb-6 grid w-full grid-cols-2 rounded-lg'>
+            {(['repel', 'attract'] as const).map((mode) => {
+              const isActive = config.mode === mode;
+              return (
+                <Button
+                  key={mode}
+                  variant={isActive ? 'default' : 'outline'}
+                  onClick={() => setConfig((p) => ({ ...p, mode }))}
+                >
+                  {mode === 'repel' ? (
+                    <MousePointer2Icon className='h-3 w-3 text-inherit' />
+                  ) : (
+                    <MagnetIcon className='h-3 w-3 text-inherit' />
+                  )}
+                  {mode}
+                </Button>
+              );
+            })}
+          </ButtonGroup>
 
-          <div className='flex items-center justify-between mb-6 px-1'>
-            <span className='text-slate-600 dark:text-slate-300 text-xs'>
+          <div className='flex items-center space-x-2 mb-6 justify-between px-1'>
+            <Label htmlFor='airplane-mode' className='text-muted-foreground'>
               Motion Trails
-            </span>
-            <button
-              onClick={() =>
-                setConfig((prev) => ({ ...prev, showTrails: !prev.showTrails }))
+            </Label>
+            <Switch
+              checked={config.showTrails}
+              onCheckedChange={() =>
+                setConfig((prev) => ({
+                  ...prev,
+                  showTrails: !prev.showTrails,
+                }))
               }
-              className={`w-10 h-5 rounded-full transition-colors relative ${
-                config.showTrails
-                  ? 'bg-emerald-500'
-                  : 'bg-slate-300 dark:bg-slate-700'
-              }`}
-            >
-              <span
-                className={`absolute top-1 left-1 bg-white/99 w-3 h-3 rounded-full transition-transform ${
-                  config.showTrails ? 'translate-x-5' : 'translate-x-0'
-                }`}
-              />
-            </button>
+              id='airplane-mode'
+            />
           </div>
-
-          <div className='h-px bg-slate-200 dark:bg-slate-800 w-full mb-5' />
 
           <div className='space-y-5'>
-            <div>
-              <div className='text-slate-500 dark:text-slate-400 mb-2 flex justify-between text-xs'>
-                <span>Density</span>
-                <span className='text-emerald-600 dark:text-emerald-400 font-mono'>
-                  {config.count}
-                </span>
-              </div>
-              <input
-                type='range'
-                min='20'
-                max='300'
-                value={config.count}
-                onChange={(e) =>
-                  setConfig({ ...config, count: Number(e.target.value) })
-                }
-                className='accent-emerald-500 bg-slate-200 dark:bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
-              />
-            </div>
+            {[
+              {
+                label: 'Density',
+                value: config.count,
+                min: 20,
+                max: 300,
+                onChange: (v: number) => setConfig((c) => ({ ...c, count: v })),
+              },
+              {
+                label: 'Link Range',
+                value: config.connectionDist,
+                min: 50,
+                max: 250,
+                onChange: (v: number) =>
+                  setConfig((c) => ({ ...c, connectionDist: v })),
+              },
+              {
+                label: 'Volatility',
+                value: config.speed,
+                min: 0.1,
+                max: 4,
+                onChange: (v: number) => setConfig((c) => ({ ...c, speed: v })),
+                step: 0.1,
+              },
+              {
+                label: 'Friction',
+                value: config.friction,
+                min: 0.01,
+                max: 0.3,
+                onChange: (v: number) =>
+                  setConfig((c) => ({ ...c, friction: v })),
+                step: 0.01,
+              },
+            ].map(({ label, value, min, max, onChange, step = 1 }, i) => (
+              <div key={i} className='space-y-2'>
+                <div className='flex justify-between text-xs text-muted-foreground'>
+                  <span>{label}</span>
+                  <span className='font-mono text-foreground'>{value}</span>
+                </div>
 
-            <div>
-              <div className='text-slate-500 dark:text-slate-400 mb-2 flex justify-between text-xs'>
-                <span>Link Range</span>
-                <span className='text-emerald-600 dark:text-emerald-400 font-mono'>
-                  {config.connectionDist}px
-                </span>
-              </div>
-              <input
-                type='range'
-                min='50'
-                max='250'
-                value={config.connectionDist}
-                onChange={(e) =>
-                  setConfig({
-                    ...config,
-                    connectionDist: Number(e.target.value),
-                  })
-                }
-                className='accent-emerald-500 bg-slate-200 dark:bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
-              />
-            </div>
-
-            <div>
-              <div className='text-slate-500 dark:text-slate-400 mb-2 flex justify-between text-xs'>
-                <span>Volatility</span>
-                <span className='text-emerald-600 dark:text-emerald-400 font-mono'>
-                  {config.speed.toFixed(1)}x
-                </span>
-              </div>
-              <input
-                type='range'
-                min='0.1'
-                max='4'
-                step='0.1'
-                value={config.speed}
-                onChange={(e) =>
-                  setConfig({ ...config, speed: Number(e.target.value) })
-                }
-                className='accent-emerald-500 bg-slate-200 dark:bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
-              />
-            </div>
-
-            <div>
-              <div className='text-slate-500 dark:text-slate-400 mb-2 flex justify-between text-xs'>
-                <span>Friction</span>
-                <span className='text-emerald-600 dark:text-emerald-400 font-mono'>
-                  {config.friction.toFixed(2)}
-                </span>
-              </div>
-              <input
-                type='range'
-                min='0.01'
-                max='0.30'
-                step='0.01'
-                value={config.friction}
-                onChange={(e) =>
-                  setConfig({ ...config, friction: Number(e.target.value) })
-                }
-                className='accent-emerald-500 bg-slate-200 dark:bg-slate-700 h-1 w-full cursor-pointer appearance-none rounded-lg'
-              />
-            </div>
-          </div>
-
-          <div className='mt-6'>
-            <div className='text-slate-500 dark:text-slate-400 mb-2 text-xs'>
-              Theme
-            </div>
-            <div className='flex gap-3'>
-              {['#64ffda', '#f43f5e', '#3b82f6', '#0f172a'].map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setConfig({ ...config, color: c })}
-                  className={`h-6 w-6 rounded-full border border-slate-300 dark:border-slate-600 transition-transform hover:scale-110 ${
-                    config.color === c
-                      ? 'ring-2 ring-emerald-500 ring-offset-2 ring-offset-white dark:ring-offset-slate-900'
-                      : ''
-                  }`}
-                  style={{ backgroundColor: c }}
-                  title={c}
+                <Slider
+                  min={min as number}
+                  max={max as number}
+                  step={step as number}
+                  value={[value as number]}
+                  onValueChange={([v]) => onChange(v)}
                 />
-              ))}
+              </div>
+            ))}
+            <div className='mt-6'>
+              <div className='mb-2 text-xs text-muted-foreground'>Theme</div>
+              <div className='flex gap-3'>
+                {['#64ffda', '#f43f5e', '#3b82f6', '#0f172a'].map((c) => (
+                  <Button
+                    key={c}
+                    onClick={() => setConfig((prev) => ({ ...prev, color: c }))}
+                    className={cn(
+                      'h-6 w-6 rounded-full transition-transform hover:scale-110',
+                      config.color === c &&
+                        'ring-2 ring-primary ring-offset-2 ring-offset-background'
+                    )}
+                    style={{ backgroundColor: c }}
+                    title={c}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>

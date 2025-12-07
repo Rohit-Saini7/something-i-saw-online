@@ -1,4 +1,4 @@
-export type ProjectType = 'work' | 'lab' | 'experiment';
+export type ProjectType = 'external' | 'work' | 'experiment';
 
 export interface Project {
   id: string;
@@ -21,8 +21,8 @@ export const projects: Project[] = [
     slug: 'nextjs-rendering-strategies',
     description:
       'A comparative experiment visualizing the execution timing differences between CSR, SSR, SSG, and ISR. Uses real-time timestamps to demonstrate caching behaviors and hydration lag in the App Router.',
-    type: 'lab',
-    tech: ['Rendering', 'Next.js', 'TypeScript', 'Tailwind CSS'],
+    type: 'experiment',
+    tech: ['Rendering', 'Next.js', 'Tailwind CSS'],
     date: '2025-12-02',
     featured: true,
     liveUrl: '/lab/nextjs-rendering-strategies',
@@ -36,8 +36,8 @@ export const projects: Project[] = [
     slug: 'redux-time-travel-toolkit',
     description:
       'Refactored version using Redux Toolkit. Showcases createSlice, internal Immer usage for simplified immutability, and reduced boilerplate.',
-    type: 'lab',
-    tech: ['Redux Toolkit', 'React'],
+    type: 'experiment',
+    tech: ['Redux Toolkit', 'React', 'Tailwind CSS'],
     date: '2025-12-01',
     featured: true,
     liveUrl: '/lab/redux-toolkit-time-travel',
@@ -51,8 +51,8 @@ export const projects: Project[] = [
     slug: 'redux-time-travel-legacy',
     description:
       'A pure Redux implementation showcasing manual immutability, state history, and time-travel debugging without Redux Toolkit.',
-    type: 'lab',
-    tech: ['Redux (Legacy)', 'React'],
+    type: 'experiment',
+    tech: ['Redux (Legacy)', 'React', 'Tailwind CSS'],
     date: '2025-12-01',
     featured: false,
     liveUrl: '/lab/redux-time-travel',
@@ -66,7 +66,7 @@ export const projects: Project[] = [
     slug: 'text-scramble',
     description:
       'A cyberpunk-inspired text decryption effect using interval mathematics.',
-    type: 'lab',
+    type: 'experiment',
     tech: ['React', 'TypeScript', 'Algorithms'],
     date: '2025-11-24',
     featured: false,
@@ -81,10 +81,10 @@ export const projects: Project[] = [
     slug: 'particle-physics',
     description:
       'A canvas-based 2D physics simulation to test browser performance limits.',
-    type: 'lab',
+    type: 'experiment',
     tech: ['HTML5 Canvas', 'TypeScript', 'Math'],
     date: '2025-11-24',
-    featured: false,
+    featured: true,
     liveUrl: '/lab/particle-physics',
     repoUrl:
       'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/lab/particle-engine.tsx',
@@ -96,12 +96,11 @@ export const projects: Project[] = [
     slug: 'buddy-bills',
     description:
       'A PWA for group expense tracking with role-based access, auto-balance updates, and dynamic split logic.',
-    type: 'work',
+    type: 'external',
     tech: ['Next.js', 'NestJS', 'PostgreSQL', 'SWR'],
     date: '2025-04-01',
     featured: true,
     repoUrl: 'https://github.com/Rohit-Saini7/BuddyBills',
-    liveUrl: '#',
     mobileFriendly: true,
   },
 ];

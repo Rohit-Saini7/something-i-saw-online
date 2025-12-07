@@ -12,7 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const labRoutes = projects
-    .filter((p) => p.type === 'lab')
+    .filter((p) => p.type === 'experiment')
     .map((project) => ({
       url: `${baseUrl}/lab/${project.slug}`,
       lastModified: new Date(project.date),

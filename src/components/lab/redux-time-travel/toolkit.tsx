@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { configureStore, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Provider, useDispatch, useSelector } from 'react-redux';
 
@@ -8,6 +8,7 @@ import { GRID_SIZE, HISTORY_LIMIT } from './common/constants';
 import countNeighbors from './common/utils';
 import GridCell from './common/ui/GridCell';
 import ControlsBase from './common/ui/ControlsBase';
+import { cn } from '@/lib/utils';
 
 type AppState = {
   grid: boolean[];
@@ -135,15 +136,23 @@ const ReduxToolkitLabContent: React.FC = () => {
 
   return (
     <div
-      className='relative h-screen w-screen bg-background text-slate-900 dark:text-slate-50 flex flex-col items-center justify-center overflow-hidden font-mono'
+      className='relative flex h-screen w-screen flex-col items-center justify-center overflow-hidden font-mono'
       onMouseDown={() => setIsDrawing(true)}
       onMouseUp={() => setIsDrawing(false)}
       onMouseLeave={() => setIsDrawing(false)}
     >
-      <div className='absolute inset-0 bg-[linear-gradient(rgba(94,110,133,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(94,110,133,0.07)_1px,transparent_1px)] dark:bg-[linear-gradient(rgba(16,185,129,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(16,185,129,0.03)_1px,transparent_1px)] bg-size-[40px_40px] pointer-events-none' />
+      <div
+        className='pointer-events-none absolute inset-0 opacity-15'
+        style={{
+          background:
+            'linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+        }}
+      />
+
       <div className='relative mb-24'>
         <div
-          className='grid grid-cols-10 gap-1 w-[300px] md:w-[400px] select-none touch-none'
+          className='grid w-xs select-none touch-none gap-1 md:w-[400px] grid-cols-10'
           onTouchStart={() => setIsDrawing(true)}
           onTouchMove={handleTouchMove}
           onTouchEnd={() => setIsDrawing(false)}
@@ -160,10 +169,14 @@ const ReduxToolkitLabContent: React.FC = () => {
           ))}
         </div>
 
-        <div className='absolute -left-6 -top-6 w-3 h-3 border-l-2 border-t-2 border-slate-500 dark:border-emerald-500/30' />
-        <div className='absolute -right-6 -top-6 w-3 h-3 border-r-2 border-t-2 border-slate-500 dark:border-emerald-500/30' />
-        <div className='absolute -left-6 -bottom-6 w-3 h-3 border-l-2 border-b-2 border-slate-500 dark:border-emerald-500/30' />
-        <div className='absolute -right-6 -bottom-6 w-3 h-3 border-r-2 border-b-2 border-slate-500 dark:border-emerald-500/30' />
+        {[
+          'top-[-24px] left-[-24px] border-t-2 border-l-2',
+          'top-[-24px] right-[-24px] border-t-2 border-r-2',
+          'bottom-[-24px] left-[-24px] border-b-2 border-l-2',
+          'bottom-[-24px] right-[-24px] border-b-2 border-r-2',
+        ].map((pos, i) => (
+          <div key={i} className={cn('absolute size-3 border-border', pos)} />
+        ))}
       </div>
 
       <ControlsBase

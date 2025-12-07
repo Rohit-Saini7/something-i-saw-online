@@ -14,7 +14,7 @@ interface PageProps {
 
 export async function generateStaticParams() {
   return projects
-    .filter((p) => p.type === 'lab')
+    .filter((p) => p.type === 'experiment')
     .map((p) => ({ slug: p.slug }));
 }
 
@@ -22,7 +22,9 @@ export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug && p.type === 'lab');
+  const project = projects.find(
+    (p) => p.slug === slug && p.type === 'experiment'
+  );
 
   if (!project) return { title: 'Not Found' };
 
@@ -34,7 +36,9 @@ export async function generateMetadata({
 
 export default async function LabPage({ params }: PageProps) {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug && p.type === 'lab');
+  const project = projects.find(
+    (p) => p.slug === slug && p.type === 'experiment'
+  );
 
   if (!project) {
     notFound();
@@ -44,22 +48,27 @@ export default async function LabPage({ params }: PageProps) {
     switch (slug) {
       case 'particle-physics':
         return <ParticleEngine />;
+
       case 'text-scramble':
         return <TextScramble />;
+
       case 'redux-time-travel-legacy':
         return <ReduxTimeTravelLab />;
+
       case 'redux-time-travel-toolkit':
         return <ReduxToolkitTimeTravelLab />;
+
       case 'nextjs-rendering-strategies':
         return <TheTimestampTest />;
 
       default:
         return (
-          <div className='flex h-screen w-full flex-col items-center justify-center space-y-4'>
-            <p className='text-muted-foreground font-mono'>
-              Experiment loaded: <span className='text-foreground'>{slug}</span>
+          <div className='flex min-h-screen w-full flex-col items-center justify-center space-y-4 px-4 text-center'>
+            <p className='font-mono text-muted-foreground'>
+              Experiment loaded:{' '}
+              <span className='font-medium text-foreground'>{slug}</span>
             </p>
-            <p className='text-muted-foreground text-sm'>
+            <p className='text-sm text-muted-foreground'>
               (Component not found in registry)
             </p>
           </div>
@@ -69,7 +78,7 @@ export default async function LabPage({ params }: PageProps) {
 
   return (
     <>
-      {!project.mobileFriendly && <MobileWarning />}
+      {project.mobileFriendly ? null : <MobileWarning />}
       {renderExperiment()}
     </>
   );

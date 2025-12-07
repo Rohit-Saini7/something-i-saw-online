@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { projects } from '@/data/projects';
@@ -31,13 +30,16 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from '@ui-components/drawer';
+import { Fragment, useState } from 'react';
 
 export default function LabNavbar() {
   const pathname = usePathname();
-  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const slug = pathname.split('/').pop();
-  const project = projects.find((p) => p.slug === slug && p.type === 'lab');
+  const project = projects.find(
+    (p) => p.slug === slug && p.type === 'experiment'
+  );
 
   if (!project) return null;
 
@@ -107,7 +109,7 @@ export default function LabNavbar() {
                 </DrawerTitle>
                 <Badge variant='outline'>Experiment</Badge>
               </div>
-              <DrawerDescription className='text-muted-foreground text-base leading-relaxed'>
+              <DrawerDescription className='text-muted-foreground text-base leading-relaxed text-justify'>
                 {project.description}
               </DrawerDescription>
             </DrawerHeader>
@@ -119,16 +121,19 @@ export default function LabNavbar() {
                 </h4>
                 <div className='flex gap-2 text-xs text-muted-foreground font-mono'>
                   {project.tech.map((v, i) => (
-                    <React.Fragment key={v}>
+                    <Fragment key={v}>
                       <span>{v}</span>
                       {i < project.tech.length - 1 && <span>•</span>}
-                    </React.Fragment>
+                    </Fragment>
                   ))}
                 </div>
               </div>
             </div>
 
-            <DrawerFooter>
+            <DrawerFooter className='flex flex-row gap-2.5'>
+              <DrawerClose asChild className='w-full'>
+                <Button variant='outline'>Close</Button>
+              </DrawerClose>
               {project.repoUrl && (
                 <Button asChild className='w-full'>
                   <a
@@ -136,14 +141,11 @@ export default function LabNavbar() {
                     target='_blank'
                     rel='noopener noreferrer'
                   >
-                    <Code2Icon className='mr-2 h-4 w-4' />
+                    <Code2Icon className='mr-2 size-4' />
                     View Source Code
                   </a>
                 </Button>
               )}
-              <DrawerClose asChild>
-                <Button variant='outline'>Close</Button>
-              </DrawerClose>
             </DrawerFooter>
           </div>
         </DrawerContent>

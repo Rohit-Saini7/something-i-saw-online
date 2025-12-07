@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { MonitorPlayIcon, XIcon } from 'lucide-react';
+import { Button } from '@ui-components/button';
 
 export default function MobileWarning() {
   const [show, setShow] = useState(false);
@@ -26,19 +27,22 @@ export default function MobileWarning() {
   if (!show) return null;
 
   return (
-    <div className='fixed top-[70px] left-4 right-4 z-50 animate-in fade-in slide-in-from-top-2'>
-      <div className='bg-yellow-500/10 backdrop-blur-md border border-yellow-500/20 text-yellow-600 dark:text-yellow-500 text-xs py-3 px-4 rounded-lg flex items-center justify-between shadow-lg'>
+    <div className='fixed left-4 right-4 top-16 z-50 animate-in fade-in slide-in-from-top-2'>
+      <div className='flex items-center justify-between rounded-lg border border-warning-border bg-warning-soft px-4 py-3 text-xs text-warning-foreground shadow-lg backdrop-blur-md'>
         <div className='flex items-center gap-2'>
-          <MonitorPlayIcon className='h-4 w-4' />
+          <MonitorPlayIcon className='h-4 w-4 text-warning' />
           <span>Best viewed on Desktop.</span>
         </div>
-        <button
+
+        <Button
+          variant='ghost'
+          size='icon-sm'
           onClick={dismiss}
-          className='hover:bg-yellow-500/20 p-1 rounded-full transition-colors'
+          className='hover:bg-warning/20'
         >
-          <XIcon className='h-3 w-3' />
+          <XIcon className='h-3 w-3 text-warning' />
           <span className='sr-only'>Dismiss</span>
-        </button>
+        </Button>
       </div>
     </div>
   );

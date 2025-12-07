@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { RefreshCwIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 export default function RefreshControl() {
   const router = useRouter();
@@ -15,21 +16,20 @@ export default function RefreshControl() {
   };
 
   return (
-    <div className='fixed bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white/90 dark:bg-gray-800/90 border border-gray-200 dark:border-gray-700 p-2 pr-6 rounded-full backdrop-blur-md shadow-2xl z-50'>
+    <div className='fixed bottom-8 left-1/2 z-50 flex -translate-x-1/2 items-center gap-4 rounded-full border bg-background/90 p-2 pr-6 shadow-2xl backdrop-blur-md transition-colors'>
       <button
         onClick={handleRefresh}
-        className={`p-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white transition-all ${loading ? 'animate-spin-fast' : ''}`}
+        className={cn(
+          'rounded-full bg-primary p-3 text-primary-foreground transition-all hover:bg-primary/90',
+          loading ? 'animate-rotate-once' : ''
+        )}
       >
         <RefreshCwIcon size={20} />
       </button>
       <div className='text-sm'>
-        <p className='text-gray-900 dark:text-white font-medium'>
-          Soft Refresh
-        </p>
-        <p className='text-gray-500 dark:text-gray-400 text-xs'>
-          <code className='bg-gray-100 dark:bg-gray-900 px-1 rounded border border-gray-200 dark:border-gray-700'>
-            router.refresh()
-          </code>
+        <p className='font-medium text-foreground'>Soft Refresh</p>
+        <p className='text-xs text-muted-foreground'>
+          <code className='rounded border bg-muted px-1'>router.refresh()</code>
         </p>
       </div>
     </div>
