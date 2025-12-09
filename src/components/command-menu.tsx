@@ -47,20 +47,22 @@ export default function CommandMenu() {
   const runThemeCommand = useCallback(() => {
     const search = query.toLowerCase().trim();
 
-    if ('light'.startsWith(search)) {
-      setTheme('light');
-      setOpen(false);
-      return;
-    }
-    if ('dark'.startsWith(search)) {
-      setTheme('dark');
-      setOpen(false);
-      return;
-    }
-    if ('system'.startsWith(search)) {
-      setTheme('system');
-      setOpen(false);
-      return;
+    if (search) {
+      if ('light'.startsWith(search)) {
+        setTheme('light');
+        setOpen(false);
+        return;
+      }
+      if ('dark'.startsWith(search)) {
+        setTheme('dark');
+        setOpen(false);
+        return;
+      }
+      if ('system'.startsWith(search)) {
+        setTheme('system');
+        setOpen(false);
+        return;
+      }
     }
 
     if (theme === 'light') setTheme('dark');

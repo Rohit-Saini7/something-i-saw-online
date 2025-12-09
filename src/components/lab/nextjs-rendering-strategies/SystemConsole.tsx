@@ -44,12 +44,12 @@ export default function SystemConsole() {
                 shrink-0 font-bold
                 ${
                   log.source === 'SSR'
-                    ? 'text-warning'
+                    ? 'text-primary'
                     : log.source === 'ISR'
-                      ? 'text-chart-3'
+                      ? 'text-revalidate'
                       : log.source === 'CSR'
-                        ? 'text-primary'
-                        : 'text-chart-2'
+                        ? 'text-info'
+                        : 'text-warning'
                 }
               `}
             >

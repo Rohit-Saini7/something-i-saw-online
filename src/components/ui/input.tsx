@@ -1,7 +1,5 @@
 import { cn } from '@/lib/utils';
 
-//[]: replace all input with shadcn Input where possible
-
 function Input({ className, type, ...props }: React.ComponentProps<'input'>) {
   return (
     <input

@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState, useCallback } from 'react';
 import {
-  Settings2Icon,
   XIcon,
   RefreshCcwIcon,
   TypeIcon,
@@ -15,9 +14,13 @@ import {
   ShuffleIcon,
   LockIcon,
   UnlockIcon,
+  SlidersHorizontalIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Slider } from '@ui-components/slider';
+import { Toggle } from '@ui-components/toggle';
+import { Button } from '@ui-components/button';
+import { ButtonGroup } from '@ui-components/button-group';
 
 const CHAR_SETS = {
   Chaos: '!<>-_\\/[]{}—=+*^?#________',
@@ -27,7 +30,7 @@ const CHAR_SETS = {
 };
 
 type CharSetType = keyof typeof CHAR_SETS;
-type RevealMode = 'start' | 'end' | 'random';
+type RevealMode = 'Linear' | 'Random' | 'Reverse';
 
 type ScrambleConfig = {
   text: string;
@@ -54,7 +57,7 @@ export default function ScrambleLab() {
     text: 'SYSTEM_BREACH',
     speed: 0.4,
     charSet: 'Chaos',
-    revealMode: 'random',
+    revealMode: 'Random',
     glow: true,
     crt: true,
     color: '#10b981',
@@ -93,12 +96,12 @@ export default function ScrambleLab() {
 
     const indices = Array.from({ length }, (_, i) => i);
 
-    if (config.revealMode === 'random') {
+    if (config.revealMode === 'Random') {
       for (let i = indices.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [indices[i], indices[j]] = [indices[j], indices[i]];
       }
-    } else if (config.revealMode === 'end') {
+    } else if (config.revealMode === 'Reverse') {
       indices.reverse();
     }
 
@@ -202,16 +205,18 @@ export default function ScrambleLab() {
         <span>CLICK TO {isDecrypted ? 'ENCRYPT' : 'DECRYPT'}</span>
       </div>
 
-      <button
-        onClick={() => setIsControlsOpen((p) => !p)}
-        className='fixed right-6 top-6 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-border bg-card text-foreground shadow backdrop-blur-md transition hover:bg-accent hover:text-accent-foreground'
+      <Button
+        onClick={() => setIsControlsOpen(!isControlsOpen)}
+        className='fixed top-6 right-6 z-40 rounded-full'
+        variant='outline'
+        size='icon-lg'
       >
         {isControlsOpen ? (
           <XIcon className='h-5 w-5' />
         ) : (
-          <Settings2Icon className='h-5 w-5' />
+          <SlidersHorizontalIcon className='h-5 w-5' />
         )}
-      </button>
+      </Button>
 
       <div
         className={cn(
@@ -226,15 +231,16 @@ export default function ScrambleLab() {
             <h3 className='text-xs font-bold tracking-widest text-muted-foreground uppercase'>
               Decryption Protocol
             </h3>
-            <button
+            <Button
+              variant='ghost'
+              size='icon-only'
               onClick={() =>
                 triggerScramble(isDecrypted ? config.text : encryptedText)
               }
-              className='text-muted-foreground hover:text-foreground transition'
               title='Re-run Sequence'
             >
               <RefreshCcwIcon className='h-4 w-4' />
-            </button>
+            </Button>
           </div>
 
           <div className='mb-5'>
@@ -259,65 +265,57 @@ export default function ScrambleLab() {
             <div className='mb-2 text-xs text-muted-foreground'>
               Encryption Cipher
             </div>
-            <div className='grid grid-cols-4 gap-2'>
+            <ButtonGroup className='grid w-full grid-cols-4'>
               {[
                 { id: 'Chaos', icon: ZapIcon },
                 { id: 'Binary', icon: BinaryIcon },
                 { id: 'Matrix', icon: LanguagesIcon },
                 { id: 'Simple', icon: TypeIcon },
               ].map((item) => (
-                <button
+                <Button
                   key={item.id}
+                  variant={config.charSet === item.id ? 'default' : 'outline'}
                   onClick={() =>
                     setConfig({
                       ...config,
                       charSet: item.id as CharSetType,
                     })
                   }
-                  className={cn(
-                    'flex h-9 items-center justify-center rounded-md border transition',
-                    config.charSet === item.id
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-muted-foreground hover:text-foreground'
-                  )}
                   title={item.id.toUpperCase()}
                 >
-                  <item.icon className='h-4 w-4' />
-                </button>
+                  <item.icon />
+                </Button>
               ))}
-            </div>
+            </ButtonGroup>
           </div>
 
           <div className='mb-5'>
             <div className='mb-2 text-xs text-muted-foreground'>
               Reveal Logic
             </div>
-            <div className='grid grid-cols-3 gap-2'>
+            <ButtonGroup className='grid w-full grid-cols-3'>
               {[
                 { id: 'Linear', icon: ArrowRightIcon },
                 { id: 'Random', icon: ShuffleIcon },
                 { id: 'Reverse', icon: ArrowLeftIcon },
               ].map((item) => (
-                <button
+                <Button
                   key={item.id}
+                  variant={
+                    config.revealMode === item.id ? 'default' : 'outline'
+                  }
                   onClick={() =>
                     setConfig({
                       ...config,
                       revealMode: item.id as RevealMode,
                     })
                   }
-                  className={cn(
-                    'flex h-9 items-center justify-center rounded-md border transition',
-                    config.revealMode === item.id
-                      ? 'bg-primary text-primary-foreground'
-                      : 'bg-muted text-muted-foreground hover:text-foreground'
-                  )}
                   title={item.id}
                 >
-                  <item.icon className='h-4 w-4' />
-                </button>
+                  <item.icon />
+                </Button>
               ))}
-            </div>
+            </ButtonGroup>
           </div>
 
           <div className='mb-5 space-y-2'>
@@ -358,31 +356,24 @@ export default function ScrambleLab() {
               </div>
             </div>
           </div>
-          <div className='flex gap-2'>
-            <button
-              onClick={() => setConfig((c) => ({ ...c, glow: !c.glow }))}
-              className={cn(
-                'flex-1 rounded-md border py-1.5 text-xs transition font-bold',
-                config.glow
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted text-muted-foreground'
-              )}
+          <div className='grid grid-cols-2 gap-2'>
+            <Toggle
+              onPressedChange={() =>
+                setConfig((c) => ({ ...c, glow: !c.glow }))
+              }
+              pressed={config.glow}
+              variant='primary'
             >
               GLOW {config.glow ? 'ON' : 'OFF'}
-            </button>
-
-            <button
-              onClick={() => setConfig((c) => ({ ...c, crt: !c.crt }))}
-              className={cn(
-                'flex flex-1 items-center justify-center gap-2 rounded-md border py-1.5 text-xs transition font-bold',
-                config.crt
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-muted text-muted-foreground'
-              )}
+            </Toggle>
+            <Toggle
+              onPressedChange={() => setConfig((c) => ({ ...c, crt: !c.crt }))}
+              variant='primary'
+              pressed={config.crt}
             >
               <MonitorIcon className='size-3' />
               CRT {config.crt ? 'ON' : 'OFF'}
-            </button>
+            </Toggle>
           </div>
         </div>
       </div>

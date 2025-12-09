@@ -29,9 +29,10 @@ import {
 import { Button } from '@ui-components/button';
 import { useClipboard } from '@/hooks/useClipboard';
 import { Kbd, KbdGroup } from '@ui-components/kbd';
-import { cn } from '@/lib/utils';
 import { Slider } from '@ui-components/slider';
 import { Textarea } from '@ui-components/textarea';
+import { Separator } from '@ui-components/separator';
+import { ButtonGroup } from '@ui-components/button-group';
 
 export default function ControlsBase({
   history,
@@ -151,25 +152,30 @@ export default function ControlsBase({
 
           <div className='flex items-center gap-2'>
             {Object.entries(PRESETS).map(([name, pattern]) => (
-              <button
+              <Button
+                variant='outline'
                 key={name}
                 onClick={() => {
                   onPreset(pattern);
                   setIsPlaying(false);
                 }}
-                className='rounded bg-muted px-2 py-1 font-mono text-2xs uppercase tracking-wide text-muted-foreground transition hover:bg-accent hover:text-accent-foreground'
+                className='bg-muted px-2 py-1 size-fit border-0 text-2xs uppercase tracking-wide text-muted-foreground transition hover:bg-accent hover:text-accent-foreground'
               >
                 {name}
-              </button>
+              </Button>
             ))}
 
-            <div className='mx-1 h-4 w-px bg-border' />
+            <Separator orientation='vertical' className='h-4!' />
 
             <Dialog>
               <DialogTrigger asChild className='hidden md:block'>
-                <button className='text-muted-foreground transition hover:text-foreground'>
-                  <KeyboardIcon className='size-4' />
-                </button>
+                <Button
+                  variant='ghost'
+                  size='icon-only'
+                  className='text-muted-foreground transition hover:text-foreground'
+                >
+                  <KeyboardIcon />
+                </Button>
               </DialogTrigger>
 
               <DialogContent>
@@ -188,19 +194,25 @@ export default function ControlsBase({
               </DialogContent>
             </Dialog>
 
-            <button
+            <Button
               onClick={copyState}
               title='Export Grid State'
+              variant='ghost'
+              size='icon-only'
               className='text-muted-foreground transition hover:text-foreground'
             >
               <Share2Icon className='size-4' />
-            </button>
+            </Button>
 
             <Dialog open={isImporting} onOpenChange={setIsImporting}>
               <DialogTrigger asChild>
-                <button className='text-muted-foreground transition hover:text-foreground'>
+                <Button
+                  variant='ghost'
+                  size='icon-only'
+                  className='text-muted-foreground transition hover:text-foreground'
+                >
                   <DownloadIcon className='size-4' />
-                </button>
+                </Button>
               </DialogTrigger>
 
               <DialogContent>
@@ -234,69 +246,67 @@ export default function ControlsBase({
           </div>
         </div>
 
-        <div className='mb-5'>
-          <Slider
-            min={0}
-            max={history.length - 1}
-            value={[currentIndex]}
-            onValueChange={([v]) => {
-              onScrub(v);
-              setIsPlaying(false);
-            }}
-          />
-        </div>
+        <Slider
+          min={0}
+          max={history.length - 1}
+          value={[currentIndex]}
+          onValueChange={([v]) => {
+            onScrub(v);
+            setIsPlaying(false);
+          }}
+          className='mb-5'
+        />
 
         <div className='flex items-center justify-between'>
-          <button
+          <Button
+            variant='ghost'
+            size='icon'
             onClick={() => {
               onReset();
               setIsPlaying(false);
             }}
-            className='rounded-md p-2 text-muted-foreground transition hover:bg-destructive/15 hover:text-destructive'
+            className='text-muted-foreground transition hover:bg-destructive/15 hover:text-destructive'
           >
-            <Trash2Icon className='size-4' />
-          </button>
+            <Trash2Icon />
+          </Button>
 
-          <div className='flex items-center gap-3 rounded-lg bg-muted p-1'>
-            <button
+          <ButtonGroup className='rounded-lg bg-muted p-1'>
+            <Button
+              variant='ghost'
+              size='icon'
               onClick={stepBack}
               disabled={currentIndex === 0}
               className='p-2 text-muted-foreground transition hover:text-foreground disabled:opacity-30'
             >
-              <ChevronLeftIcon className='size-4' />
-            </button>
-
-            <button
+              <ChevronLeftIcon />
+            </Button>
+            <Button
+              variant={isPlaying ? 'default' : 'secondary'}
+              size='icon'
               onClick={togglePlay}
-              className={cn(
-                'flex items-center gap-2 rounded-md px-6 py-2 text-sm font-bold transition',
-                isPlaying
-                  ? 'bg-primary text-primary-foreground shadow'
-                  : 'bg-card text-card-foreground hover:bg-accent'
-              )}
+              className='w-16 px-6 py-2 text-sm font-bold transition-colors rounded-md!'
             >
-              {isPlaying ? (
-                <PauseIcon className='size-3' />
-              ) : (
-                <PlayIcon className='size-3' />
-              )}
-            </button>
-
-            <button
+              {isPlaying ? <PauseIcon /> : <PlayIcon />}
+            </Button>
+            <Button
+              variant='ghost'
+              size='icon'
               onClick={stepForward}
               disabled={currentIndex === history.length - 1}
               className='p-2 text-muted-foreground transition hover:text-foreground disabled:opacity-30'
             >
-              <ChevronRightIcon className='size-4' />
-            </button>
-          </div>
+              <ChevronRightIcon />
+            </Button>
+          </ButtonGroup>
 
-          <button
+          <Button
+            variant='ghost'
+            size='icon'
             onClick={onStep}
-            className='rounded-md p-2 text-muted-foreground transition hover:bg-accent hover:text-accent-foreground'
+            className='text-muted-foreground transition hover:bg-accent hover:text-accent-foreground'
           >
-            <CpuIcon className='size-4' />
-          </button>
+            <CpuIcon />
+          </Button>
         </div>
       </div>
     </div>
