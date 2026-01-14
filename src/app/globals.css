@@ -153,8 +153,20 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body,
-  main {
-    @apply bg-background text-foreground;
+  body {
+    @apply bg-transparent text-foreground;
+  }
+}
+
+@layer utilities {
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .writing-vertical-lr {
+    writing-mode: vertical-lr;
   }
 }

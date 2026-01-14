@@ -1,5 +1,6 @@
 {
   "editor.formatOnSave": true,
+  "css.validate": false,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
@@ -7,5 +8,14 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
-  "cSpell.words": ["cmdk", "Gurugram", "nums", "SDLC", "vaul"]
+  "cSpell.words": [
+    "cmdk",
+    "Firestore",
+    "Gurugram",
+    "Kurukshetra",
+    "nums",
+    "SDLC",
+    "Valyu",
+    "vaul"
+  ]
 }
