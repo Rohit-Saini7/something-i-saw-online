@@ -19,7 +19,14 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@lab-components/*": ["./src/components/lab/*"],
+      "@layout-components/*": ["./src/components/layout/*"],
+      "@shared-components/*": ["./src/components/shared/*"],
+      "@ui-components/*": ["./src/components/ui/*"],
+      "@components/*": ["./src/components/*"],
+      "@experience-data": ["./src/data/experience"],
+      "@projects-data": ["./src/components/projects"],
+      "@/*": ["./src/*"]
     }
   },
   "include": [
