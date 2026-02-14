@@ -4,7 +4,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-export function Scene4_Portal() {
+export function Scene4() {
   const { scrollYProgress } = useScroll();
 
   const containerOpacity = useTransform(scrollYProgress, [0.9, 0.95], [0, 1]);

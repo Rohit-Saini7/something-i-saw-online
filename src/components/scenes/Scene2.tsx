@@ -5,7 +5,7 @@ import { Badge } from '@ui-components/badge';
 import { motion, MotionValue, useScroll, useTransform } from 'framer-motion';
 import { Cpu, PaintBucket, Workflow, CheckCircle2 } from 'lucide-react';
 
-export function Scene2_Hydration() {
+export function Scene2() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({

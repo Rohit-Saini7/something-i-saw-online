@@ -8,7 +8,7 @@ import Image from 'next/image';
 import { OsShortcut } from '@components/command-menu';
 import { Badge } from '@ui-components/badge';
 
-export function Scene1_Manifesto() {
+export function Scene1() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({

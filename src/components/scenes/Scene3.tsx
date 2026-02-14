@@ -6,7 +6,7 @@ import { Terminal, Calendar, MapPin, Building2 } from 'lucide-react';
 import { experience } from '@experience-data';
 import { Badge } from '@ui-components/badge';
 
-export function Scene3_Experience() {
+export function Scene3() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const { scrollYProgress } = useScroll({

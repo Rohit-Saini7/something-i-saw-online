@@ -1,7 +1,7 @@
-import { Scene1_Manifesto } from '@/components/scenes/Scene1_Manifesto';
-import { Scene2_Hydration } from '@/components/scenes/Scene2_Hydration';
-import { Scene3_Experience } from '@/components/scenes/Scene3_Experience';
-import { Scene4_Portal } from '@/components/scenes/Scene4_Portal';
+import { Scene1 } from '@components/scenes/Scene1';
+import { Scene2 } from '@components/scenes/Scene2';
+import { Scene3 } from '@components/scenes/Scene3';
+import { Scene4 } from '@components/scenes/Scene4';
 import { GlobalBackground } from '@components/scenes/GlobalBackground';
 import { TheTravelingCard } from '@components/scenes/TheTravelingCard';
 
@@ -10,10 +10,10 @@ export default function PortfolioPage() {
     <main className='relative'>
       <GlobalBackground />
       <TheTravelingCard />
-      <Scene1_Manifesto />
-      <Scene2_Hydration />
-      <Scene3_Experience />
-      <Scene4_Portal />
+      <Scene1 />
+      <Scene2 />
+      <Scene3 />
+      <Scene4 />
     </main>
   );
 }
