@@ -59,7 +59,7 @@ export function Scene1_Manifesto() {
 
           <h1 className='text-5xl md:text-8xl font-bold tracking-tighter text-foreground leading-none'>
             ROHIT SAINI
-            <span className='text-primary'>.</span>
+            <span className='text-primary animate-pulse'>_</span>
           </h1>
 
           <div className='flex md:flex-row md:items-center gap-4'>

@@ -12,29 +12,29 @@ const CARDS = [
       { name: 'Next.js', color: 'bg-chart-2' },
       { name: 'Tailwind CSS', color: 'bg-chart-3' },
       { name: 'Framer', color: 'bg-chart-4' },
-      { name: 'Redux Toolkit', color: 'bg-chart-5' },
+      { name: 'Redux', color: 'bg-chart-5' },
     ],
   },
   {
     id: 'backend',
     title: 'BACKEND',
     items: [
-      { name: 'Node.js', color: 'bg-chart-3' },
-      { name: 'Nest.js', color: 'bg-chart-4' },
-      { name: 'Typescript', color: 'bg-chart-5' },
-      { name: 'MySQL', color: 'bg-chart-1' },
-      { name: 'REST API', color: 'bg-chart-2' },
+      { name: 'Node / Nest', color: 'bg-chart-3' },
+      { name: 'TypeScript', color: 'bg-chart-4' },
+      { name: 'Relational Databases', color: 'bg-chart-5' },
+      { name: 'REST API', color: 'bg-chart-1' },
+      { name: 'Microservices', color: 'bg-chart-2' },
     ],
   },
   {
     id: 'others',
-    title: 'OTHERS',
+    title: 'INFRA',
     items: [
-      { name: 'AWS Lambda', color: 'bg-chart-5' },
+      { name: 'AWS Ecosystem', color: 'bg-chart-5' },
       { name: 'Docker', color: 'bg-chart-4' },
-      { name: 'CI/CD', color: 'bg-chart-1' },
+      { name: 'CI / CD', color: 'bg-chart-1' },
       { name: 'Git', color: 'bg-chart-2' },
-      { name: 'Vercel', color: 'bg-chart-3' },
+      { name: 'Testing', color: 'bg-chart-3' },
     ],
   },
 ];
@@ -54,11 +54,16 @@ export function TheTravelingCard() {
   }, []);
 
   const drawProgress = useTransform(globalScroll, [0.01, 0.2], [0, 1]);
+  const drawOpacity = useTransform(globalScroll, [0.01, 0.2], [0, 1]);
 
-  const fanProgress = useTransform(globalScroll, [0.4, 0.45], [0, 1]);
+  const fanProgress = useTransform(
+    globalScroll,
+    [0.4, 0.5, 0.6, 0.625],
+    [0, 1, 1, 0]
+  );
 
-  const yExit = useTransform(globalScroll, [0.6, 0.65], ['-50%', '-150%']);
-  const exitOpacity = useTransform(globalScroll, [0.6, 0.65], [1, 0]);
+  const yExit = useTransform(globalScroll, [0.625, 0.675], ['-50%', '-150%']);
+  const exitOpacity = useTransform(globalScroll, [0.625, 0.675], [1, 0]);
 
   const desktopX = useTransform(globalScroll, [0.2, 0.4], ['80%', '75%']);
   const desktopY = useTransform(globalScroll, [0.2, 0.4], ['50%', '50%']);
@@ -71,6 +76,12 @@ export function TheTravelingCard() {
 
   const fillOpacity = useTransform(globalScroll, [0.35, 0.5], [0, 1]);
   const rotation = useTransform(globalScroll, [0.35, 0.4], [0, 180]);
+
+  const rotationOpacity = useTransform(rotation, [0, 90], [1, 0]);
+  const combinedOpacity = useTransform(
+    [rotationOpacity, drawOpacity],
+    ([r, s]) => (r as number) * (s as number)
+  );
 
   const currentX = isMobile ? mobileX : desktopX;
   const currentY = isMobile ? mobileY : desktopY;
@@ -140,9 +151,7 @@ export function TheTravelingCard() {
                 }}
               />
             </svg>
-            <motion.div
-              style={{ opacity: useTransform(rotation, [0, 90], [1, 0]) }}
-            >
+            <motion.div style={{ opacity: combinedOpacity }}>
               <div className='text-6xl font-mono font-bold text-muted-foreground/50'>
                 {'{ }'}
               </div>
@@ -183,8 +192,8 @@ function SingleCard({
 }) {
   const relativeIndex = index - activeIndex;
 
-  const xValue = relativeIndex * 35;
-  const rotateValue = relativeIndex * 5;
+  const xValue = relativeIndex * 49;
+  const rotateValue = relativeIndex * 8;
 
   const distanceFromActive = Math.abs(index - activeIndex);
   const zIndex = 50 - distanceFromActive;

@@ -34,7 +34,8 @@ export function Scene4_Portal() {
               Phase_04: Experimental
             </h2>
             <h1 className='text-5xl md:text-8xl font-black tracking-tighter mix-blend-difference'>
-              TALK IS CHEAP<span className='text-primary'>.</span>
+              TALK IS CHEAP
+              <span className='text-primary animate-pulse'>_</span>
             </h1>
             <p className='text-muted-foreground text-sm'>
               {'//'} See the raw code. Break things.

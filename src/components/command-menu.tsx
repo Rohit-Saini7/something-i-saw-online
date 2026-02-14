@@ -82,9 +82,9 @@ export default function CommandMenu() {
       <Button
         size='icon'
         onClick={() => setOpen(true)}
-        className='fixed bottom-4 right-4 z-50 md:hidden rounded-full'
+        className='fixed bottom-4 right-4 md:bottom-10 md:right-10 z-50 rounded-full md:size-10'
       >
-        <CodeIcon className='h-5 w-5' />
+        <CodeIcon className='size-5 md:size-6' />
       </Button>
 
       <CommandDialog open={open} onOpenChange={setOpen}>

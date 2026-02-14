@@ -13,8 +13,8 @@ export interface Experience {
 
 export const experience: Experience[] = [
   {
-    id: 'car-dekho-sde-2',
-    role: 'Software Development Engineer 2',
+    id: 'car-dekho-sde-ii',
+    role: 'Software Development Engineer II',
     company: 'CarDekho Group',
     location: 'Gurugram, India',
     period: {
@@ -32,8 +32,8 @@ export const experience: Experience[] = [
     tech: ['Next.js', 'NestJS', 'MySQL', 'AWS', 'TypeScript'],
   },
   {
-    id: 'car-dekho-intern',
-    role: 'Frontend Intern',
+    id: 'car-dekho-react-developer',
+    role: 'React Developer',
     company: 'CarDekho Group',
     location: 'Remote',
     period: {

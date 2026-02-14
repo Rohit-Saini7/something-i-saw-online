@@ -39,17 +39,18 @@ export function Scene2_Hydration() {
       <div className='sticky top-0 h-screen w-full flex md:items-center justify-center overflow-hidden'>
         <motion.div
           style={{ y: yExit }}
-          className='w-full max-w-6xl px-6 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start md:items-center pt-96 md:pt-0'
+          className='w-full max-w-6xl px-6 md:px-8 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start md:items-center pt-112 md:pt-0'
         >
           <div className='space-y-4 z-10 text-left relative'>
             <Badge variant='outline'>
               <span className='w-2 h-2 rounded-full bg-primary animate-pulse' />
-              CORE_COMPETENCIES
+              Core Competencies
             </Badge>
 
             <div className='space-y-4'>
               <h2 className='text-4xl md:text-6xl font-bold tracking-tight leading-tight text-foreground'>
-                The Arsenal<span className='text-primary'>_</span>
+                The Arsenal
+                <span className='text-primary animate-pulse'>_</span>
               </h2>
 
               <div className='grid grid-cols-[7fr_3fr] gap-2'>
@@ -63,12 +64,11 @@ export function Scene2_Hydration() {
 
             <div className='text-lg md:text-xl leading-relaxed space-y-2 text-muted-foreground font-medium'>
               <p>
-                A curated stack chosen for{' '}
-                <span className='text-foreground font-bold'>performance</span>{' '}
-                and robustness.
+                <span className='text-foreground font-bold'>Performance</span>
+                -first architecture. <span>Scalable by design.</span>
               </p>
               <p>
-                I specialize in the{' '}
+                Dominating the{' '}
                 <span className='text-foreground font-bold'>
                   React Ecosystem
                 </span>
@@ -79,21 +79,21 @@ export function Scene2_Hydration() {
             <div className='md:grid grid-cols-1 gap-3 text-sm font-mono pt-2 hidden'>
               <FeatureItem
                 icon={<Cpu className='w-4 h-4' />}
-                text='Hybrid Rendering Architecture'
+                text='Server-Side Mastery (Next.js 15/RSC)'
                 mix={item1Mix}
                 opacity={item1Opacity}
               />
 
               <FeatureItem
                 icon={<PaintBucket className='w-4 h-4' />}
-                text='Design Systems & Micro-Interactions'
+                text='Atomic Design & Motion Systems'
                 mix={item2Mix}
                 opacity={item2Opacity}
               />
 
               <FeatureItem
                 icon={<Workflow className='w-4 h-4' />}
-                text='End-to-End Type Safety & CI/CD'
+                text='Automated Pipelines & Type-Safe APIs'
                 mix={item3Mix}
                 opacity={item3Opacity}
               />

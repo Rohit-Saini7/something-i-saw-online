@@ -29,10 +29,13 @@ export function Scene3_Experience() {
         <motion.div className='md:sticky z-30 top-32 h-fit py-0 bg-transparent'>
           <div className='flex flex-col items-start gap-4'>
             <Badge variant='outline'>
-              <Terminal className='w-3 h-3 text-primary' />
+              <Terminal className='w-3 h-3 text-primary animate-pulse' />
               system_log.txt
             </Badge>
-            <h2 className='text-4xl md:text-5xl font-bold'>Experience</h2>
+            <h2 className='text-4xl md:text-5xl font-bold'>
+              Experience
+              <span className='text-primary animate-pulse'>_</span>
+            </h2>
             <p className='hidden md:block text-muted-foreground text-sm max-w-50'>
               A chronological record of system upgrades and architectural
               decisions.
@@ -40,8 +43,8 @@ export function Scene3_Experience() {
           </div>
         </motion.div>
 
-        <div className='relative flex flex-col gap-12 md:gap-20 pb-10'>
-          <div className='absolute left-4 top-2 bottom-0 w-px bg-border/50'>
+        <div className='relative flex flex-col gap-12 md:gap-20'>
+          <div className='absolute left-4 top-2 bottom-0 w-px bg-border/50 h-[95%]'>
             <motion.div
               style={{ height: heightTransform }}
               className='w-full bg-primary origin-top'
@@ -59,7 +62,7 @@ export function Scene3_Experience() {
             >
               <div className='absolute left-4 top-6 -translate-x-1/2 w-3 h-3 rounded-full bg-background border border-primary group-hover:border-primary group-hover:bg-primary transition-colors duration-500 z-10' />
 
-              <div className='relative rounded-xl transition-all duration-300'>
+              <div className='relative transition-all duration-300'>
                 <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4'>
                   <h3 className='text-xl font-semibold text-foreground flex items-center gap-2'>
                     {role.role}
