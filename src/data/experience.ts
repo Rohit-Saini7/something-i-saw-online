@@ -15,7 +15,7 @@ export const experience: Experience[] = [
   {
     id: 'car-dekho-sde-ii',
     role: 'Software Development Engineer II',
-    company: 'CarDekho Group',
+    company: 'Rupyy (CarDekho Group)',
     location: 'Gurugram, India',
     period: {
       start: 'Jul 2023',
@@ -34,7 +34,7 @@ export const experience: Experience[] = [
   {
     id: 'car-dekho-react-developer',
     role: 'React Developer',
-    company: 'CarDekho Group',
+    company: 'Rupyy (CarDekho Group)',
     location: 'Remote',
     period: {
       start: 'Mar 2023',
@@ -73,7 +73,7 @@ export const experience: Experience[] = [
     },
     description: [
       'Major in Information Technology.',
-      'Graduated with an 8.4 GPA.',
+      'Graduated with an 8.58 GPA.',
     ],
     tech: [],
   },
