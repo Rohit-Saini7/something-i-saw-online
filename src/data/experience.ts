@@ -48,7 +48,7 @@ export const experience: Experience[] = [
   },
   {
     id: 'valyu-ai-intern',
-    role: 'Frontend Intern',
+    role: 'React Developer',
     company: 'Valyu.ai',
     location: 'Gurugram, India',
     period: {
