@@ -39,24 +39,12 @@ export function Scene1() {
             <LiveClock />
             <ClockIcon className='w-3 h-3' />
           </div>
-          <div className='flex items-center gap-2 text-primary'>
-            SYSTEM: ONLINE
-            <span className='relative flex h-2 w-2'>
-              <span className='animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75'></span>
-              <span className='relative inline-flex rounded-full h-2 w-2 bg-primary'></span>
-            </span>
-          </div>
         </div>
 
         <motion.div
           style={{ opacity: nameOpacity }}
           className='mb-4 space-y-4 relative z-10'
         >
-          <Badge variant='outline' className='md:mb-0'>
-            <span className='w-2 h-2 rounded-full bg-primary animate-pulse' />
-            Available for Work
-          </Badge>
-
           <h1 className='text-5xl md:text-8xl font-bold tracking-tighter text-foreground leading-none'>
             ROHIT SAINI
             <span className='text-primary animate-pulse'>_</span>
