@@ -28,7 +28,7 @@ export const projects: readonly Project[] = [
     date: '2025-12-02',
     liveUrl: '/lab/nextjs-rendering-strategies',
     repoUrl:
-      'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/lab/nextjs-rendering-strategies/index.tsx',
+      'https://github.com/rohitsaini7/something-i-saw-online/blob/master/src/components/lab/nextjs-rendering-strategies/index.tsx',
     responsive: true,
   },
   {
@@ -42,7 +42,7 @@ export const projects: readonly Project[] = [
     date: '2025-12-01',
     liveUrl: '/lab/redux-time-travel-toolkit',
     repoUrl:
-      'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/lab/redux-time-travel/toolkit.tsx',
+      'https://github.com/rohitsaini7/something-i-saw-online/blob/master/src/components/lab/redux-time-travel/toolkit.tsx',
     responsive: true,
   },
   {
@@ -56,7 +56,7 @@ export const projects: readonly Project[] = [
     date: '2025-12-01',
     liveUrl: '/lab/redux-time-travel-legacy',
     repoUrl:
-      'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/lab/redux-time-travel/legacy.tsx',
+      'https://github.com/rohitsaini7/something-i-saw-online/blob/master/src/components/lab/redux-time-travel/legacy.tsx',
     responsive: true,
   },
   {
@@ -69,7 +69,7 @@ export const projects: readonly Project[] = [
     tech: ['Next.js', 'NestJS', 'PostgreSQL', 'SWR'],
     date: '2025-04-01',
     liveUrl: 'https://buddybills.rohitsaini7.com/',
-    repoUrl: 'https://github.com/Rohit-Saini7/BuddyBills',
+    repoUrl: 'https://github.com/rohitsaini7/BuddyBills',
     responsive: true,
   },
   {
@@ -83,7 +83,7 @@ export const projects: readonly Project[] = [
     date: '2025-11-24',
     liveUrl: '/lab/text-scramble',
     repoUrl:
-      'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/lab/text-scramble.tsx',
+      'https://github.com/rohitsaini7/something-i-saw-online/blob/master/src/components/lab/text-scramble.tsx',
     responsive: true,
   },
   {
@@ -97,14 +97,15 @@ export const projects: readonly Project[] = [
     date: '2025-11-24',
     liveUrl: '/lab/particle-physics',
     repoUrl:
-      'https://github.com/Rohit-Saini7/something-i-saw-online/blob/master/src/components/lab/particle-engine.tsx',
+      'https://github.com/rohitsaini7/something-i-saw-online/blob/master/src/components/lab/particle-engine.tsx',
     responsive: true,
   },
   {
     id: 'rupyy-partner',
-    title: 'Rupyy Partner',
+    title: 'rupyy Partner',
     slug: 'rupyy-partner',
-    description: 'Partner portal to onboard dealers and process vehicle loan applications digitally.',
+    description:
+      'Partner portal to onboard dealers and process vehicle loan applications digitally.',
     type: 'work',
     tech: ['Next.js', 'NestJS', 'MySQL', 'Redis', 'AWS'],
     date: '2023-03-27',

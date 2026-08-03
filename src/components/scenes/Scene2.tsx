@@ -79,7 +79,7 @@ export function Scene2() {
             <div className='md:grid grid-cols-1 gap-3 text-sm font-mono pt-2 hidden'>
               <FeatureItem
                 icon={<Cpu className='w-4 h-4' />}
-                text='Server-Side Mastery (Next.js 15/RSC)'
+                text='Server-Side Mastery (Next.js 16/RSC)'
                 mix={item1Mix}
                 opacity={item1Opacity}
               />
